@@ -7,7 +7,7 @@ export default function SidebarMenu({ toggleSidebar }: { toggleSidebar: () => vo
         <motion.div
             initial={{ x: -400, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.1 }}
+            transition={{ duration: 0.15 }}
             exit={{ x: -400, opacity: 0 }}
             style={{ position: 'fixed' }}
             key="sidebarMenuContainer"

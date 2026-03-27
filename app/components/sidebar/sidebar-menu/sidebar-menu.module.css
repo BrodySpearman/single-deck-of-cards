@@ -4,8 +4,8 @@
     left: 0;
     width: 25em;
     height: 100vh;
-    background-color: #2e2e2e;
-    border-right: 1px solid #444;
+    background-color: #1d1d1d;
+    border-right: 1px solid #272727;
     z-index: 999;
     transition: all 0.3s ease;
 }
