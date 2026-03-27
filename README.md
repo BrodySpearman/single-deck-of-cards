@@ -1,3 +1,5 @@
+Attempting to use React to create solitaire. With more games coming possibly.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

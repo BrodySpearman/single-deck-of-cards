@@ -1,0 +1,18 @@
+.sidebarIconContainer {
+    position: fixed;
+    top: 1.5rem;
+    left: 1.5rem;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.sidebarOpenButton {
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.sidebarOpenButton:hover {
+    transform: scale(1.3);
+}

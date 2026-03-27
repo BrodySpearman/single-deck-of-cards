@@ -1,0 +1,31 @@
+.sidebarMenuContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 25em;
+    height: 100vh;
+    background-color: #2e2e2e;
+    border-right: 1px solid #444;
+    z-index: 999;
+    transition: all 0.3s ease;
+}
+
+.sidebarCloseButton {
+    position: absolute;
+    top: 1.2rem;
+    right: 1rem;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.sidebarCloseButton:hover {
+    transform: scale(1.2);
+}
+
+.sidebarTitle {
+    font-size: 1.5rem;
+    margin-top: 1rem;
+    color: #eeeeee;
+    text-align: center;
+}
