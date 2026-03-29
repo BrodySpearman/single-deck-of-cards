@@ -14,3 +14,13 @@ export function createDeck(): Card[] {
     );
 };
 
+export function shuffleDeck(deck: Card[]): Card[] {
+    const shuffled = [...deck];
+
+    for (let i = shuffled.length; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1)); // selects a random index from 0 to i
+        [shuffled[i - 1], shuffled[j]] = [shuffled[j], shuffled[i - 1]];
+    }
+    return shuffled;
+}
+
