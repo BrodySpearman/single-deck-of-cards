@@ -10,22 +10,30 @@ import type { SolitaireState } from "@/app/types/solitaire";
 export default function SolitaireTable() {
     const [gameState, setGameState] = useState<SolitaireState | null>(null);
 
-    const renderWaste = () => {
-        return gameState && gameState.waste.length > 0 && gameState.waste.slice(0, 3).map((card, index) => {
-            return (
-                <div key={index} className={`${styles.cardPlaceholder}`}>
-                    <PlayingCard card={card} faceUp={true} />
-                </div>
-            );
-        });
-    }
-
     const handleDealWaste = () => {
         setGameState(dealWaste(gameState!));
-    }
+    };
 
     const handleStartGame = () => {
         setGameState(initializeGame());
+    };
+
+    const renderWaste = () => {
+        return gameState!.waste.length > 0 && gameState!.waste.slice(-3).map((card, index) => {
+            return (
+                <div key={index} className={`${styles.cardPlaceholder}`}>
+                    <PlayingCard card={card} faceUp={true} isPlayable={index === 2} />
+                </div>
+            );
+        });
+    };
+
+    const renderStock = () => {
+        return gameState!.stock.length > 0 && (
+            <button className={styles.drawPileBtn} onClick={handleDealWaste}>
+                <PlayingCard card={gameState!.stock[gameState!.stock.length - 1]} faceUp={false} isPlayable={true} />
+            </button>
+        );
     }
 
     return (
@@ -42,12 +50,8 @@ export default function SolitaireTable() {
                         {gameState ? renderWaste() : null}
                     </div>
                     <div className={styles.stock}>
-                        <div className={`${styles.drawPile} ${styles.cardPlaceholder}`}>
-                            {gameState && gameState.stock.length > 0 && (
-                                <button className={styles.drawPileBtn} onClick={handleDealWaste}>
-                                    <PlayingCard card={gameState.stock[gameState.stock.length - 1]} faceUp={false} />
-                                </button>
-                            )}
+                        <div style={{ borderColor: gameState ? "transparent" : "#530048" }} className={`${styles.drawPile} ${styles.cardPlaceholder}`}>
+                            {gameState ? renderStock() : null}
                         </div>
                     </div>
                 </div>
@@ -65,7 +69,7 @@ export default function SolitaireTable() {
 
                             return (
                                 <div key={cardIndex} style={{ marginTop }}>
-                                    <PlayingCard card={card} faceUp={card.faceUp} />
+                                    <PlayingCard card={card} faceUp={card.faceUp} isPlayable={card.faceUp} />
                                 </div>
                             );
                         })}

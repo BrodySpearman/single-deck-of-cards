@@ -26,6 +26,7 @@ export function initializeGame(): SolitaireState {
 export function dealWaste(currentState: SolitaireState) {
     const stock = currentState.stock;
     const waste = currentState.waste;
+    console.log(waste);
 
     if (stock.length == 0) {
         return {

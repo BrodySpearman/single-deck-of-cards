@@ -22,11 +22,12 @@ const FACE_ICON: Record<string, React.ReactNode> = {
 
 interface playingCardProps {
     card: Card;
-    onClick?: () => void;
     faceUp: boolean;
+    onClick?: () => void;
+    isPlayable?: boolean;
 }
 
-export default function PlayingCard({ card, onClick, faceUp }: playingCardProps) {
+export default function PlayingCard({ card, onClick, faceUp, isPlayable }: playingCardProps) {
     const faceDownBorderColor = '#222f79';
 
     const renderCardBack = () => {
@@ -64,7 +65,7 @@ export default function PlayingCard({ card, onClick, faceUp }: playingCardProps)
 
     return (
         <motion.div
-            whileHover={{ y: -5 }}
+            whileHover={isPlayable ? { y: -5 } : {}}
             transition={{ duration: 0.2 }}
             onClick={onClick}
             className={`${styles.playingCardContainer} no-highlight`}
