@@ -7,4 +7,5 @@ export interface Card {
     suit: Suit;
     rank: Rank;
     faceUp: boolean;
+    color: 'red' | 'black';
 };

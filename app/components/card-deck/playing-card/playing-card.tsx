@@ -5,6 +5,7 @@ import { GiSwordAltar } from "react-icons/gi";
 import { FaRegChessQueen, FaRegChessKing } from "react-icons/fa6";
 import { PIP_LAYOUTS } from "./pipFormat";
 import { motion } from "framer-motion";
+import { getDropZoneId } from "../../games/general-functions";
 
 
 const SUIT_SYMBOL: Record<Suit, string> = {
@@ -25,9 +26,12 @@ interface playingCardProps {
     faceUp: boolean;
     onClick?: () => void;
     isPlayable?: boolean;
+    draggable?: boolean;
+    onSolitaireDrop?: (card: Card, targetZoneId: string) => void;
+    children?: React.ReactNode;
 }
 
-export default function PlayingCard({ card, onClick, faceUp, isPlayable }: playingCardProps) {
+export default function PlayingCard({ card, onClick, faceUp, isPlayable, draggable, onSolitaireDrop, children }: playingCardProps) {
     const faceDownBorderColor = '#222f79';
 
     const renderCardBack = () => {
@@ -65,31 +69,46 @@ export default function PlayingCard({ card, onClick, faceUp, isPlayable }: playi
 
     return (
         <motion.div
+            drag={draggable}
+            dragMomentum={false}
+            whileDrag={{ zIndex: 100 }}
             whileHover={isPlayable ? { y: -5 } : {}}
+            dragSnapToOrigin={true}
+            onDragEnd={(e, info) => {
+                const dropZoneId = getDropZoneId(info.point.x, info.point.y);
+                if (dropZoneId) {
+                    onSolitaireDrop?.(card, dropZoneId);
+                }
+            }}
+            dragElastic={1}
             transition={{ duration: 0.2 }}
-            onClick={onClick}
-            className={`${styles.playingCardContainer} no-highlight`}
-            style={{
-                border: `.1rem solid ${card.faceUp ? card.suit === 'hearts' || card.suit === 'diamonds' ? '#861111ff' : '#b5b5b5' : faceDownBorderColor}`,
-                boxShadow: `0px 0px 3px 1px ${card.faceUp ? card.suit === 'hearts' || card.suit === 'diamonds' ? '#861111ff' : '#b5b5b5b3' : faceDownBorderColor}`,
-                WebkitBoxShadow: `0px 0px 3px 1px ${card.faceUp ? card.suit === 'hearts' || card.suit === 'diamonds' ? '#861111ff' : '#b5b5b5b3' : faceDownBorderColor}`,
-                MozBoxShadow: `0px 0px 3px 1px ${card.faceUp ? card.suit === 'hearts' || card.suit === 'diamonds' ? '#861111ff' : '#b5b5b5b3' : faceDownBorderColor}`,
-                color: card.faceUp ? card.suit === 'hearts' || card.suit === 'diamonds' ? '#861111ff' : '#b5b5b5b3' : faceDownBorderColor,
-            }}>
-            {faceUp ?
-                <>
-                    <div className={styles.numberSuitCorners}>
-                        <div className={`${styles.topLeft} ${styles.corner}`}>{card.rank}<br></br> {SUIT_SYMBOL[card.suit]}</div>
-                        <div className={`${styles.bottomRight} ${styles.corner}`}>{card.rank}<br></br> {SUIT_SYMBOL[card.suit]}</div>
-                    </div>
-                    <div className={styles.centerContainer}>
-                        <div className={styles.suitGrid}>
-                            {renderPips()}
+        >
+            <div
+                onClick={onClick}
+                className={`${styles.playingCardContainer} no-highlight`}
+                style={{
+                    border: `.1rem solid ${card.faceUp ? card.suit === 'hearts' || card.suit === 'diamonds' ? '#861111ff' : '#b5b5b5' : faceDownBorderColor}`,
+                    boxShadow: `0px 0px 3px 1px ${card.faceUp ? card.suit === 'hearts' || card.suit === 'diamonds' ? '#861111ff' : '#b5b5b5b3' : faceDownBorderColor}`,
+                    WebkitBoxShadow: `0px 0px 3px 1px ${card.faceUp ? card.suit === 'hearts' || card.suit === 'diamonds' ? '#861111ff' : '#b5b5b5b3' : faceDownBorderColor}`,
+                    MozBoxShadow: `0px 0px 3px 1px ${card.faceUp ? card.suit === 'hearts' || card.suit === 'diamonds' ? '#861111ff' : '#b5b5b5b3' : faceDownBorderColor}`,
+                    color: card.faceUp ? card.suit === 'hearts' || card.suit === 'diamonds' ? '#861111ff' : '#b5b5b5b3' : faceDownBorderColor,
+                }}>
+                {faceUp ?
+                    <>
+                        <div className={styles.numberSuitCorners}>
+                            <div className={`${styles.topLeft} ${styles.corner}`}>{card.rank}<br></br> {SUIT_SYMBOL[card.suit]}</div>
+                            <div className={`${styles.bottomRight} ${styles.corner}`}>{card.rank}<br></br> {SUIT_SYMBOL[card.suit]}</div>
                         </div>
-                    </div>
-                </> :
-                renderCardBack()
-            }
+                        <div className={styles.centerContainer}>
+                            <div className={styles.suitGrid}>
+                                {renderPips()}
+                            </div>
+                        </div>
+                    </> :
+                    renderCardBack()
+                }
+            </div>
+            {children}
         </motion.div>
     );
 };

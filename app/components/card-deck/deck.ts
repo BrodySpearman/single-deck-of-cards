@@ -9,6 +9,7 @@ export function createDeck(): Card[] {
             id: `${rank}-${suit}`,
             suit,
             rank,
+            color: suit === 'hearts' || suit === 'diamonds' ? 'red' : 'black',
             faceUp: false,
         }))
     );
