@@ -5,7 +5,7 @@ import { GiSwordAltar } from "react-icons/gi";
 import { FaRegChessQueen, FaRegChessKing } from "react-icons/fa6";
 import { PIP_LAYOUTS } from "./pipFormat";
 import { motion } from "framer-motion";
-import { getDropZoneId } from "../../games/general-functions";
+import { detectDropZone } from "../../games/general-functions";
 
 
 const SUIT_SYMBOL: Record<Suit, string> = {
@@ -69,13 +69,15 @@ export default function PlayingCard({ card, onClick, faceUp, isPlayable, draggab
 
     return (
         <motion.div
+            data-card-drag
             drag={draggable}
             dragMomentum={false}
-            whileDrag={{ zIndex: 100 }}
+            whileDrag={{ zIndex: 100, pointerEvents: 'none' as any }}
             whileHover={isPlayable ? { y: -5 } : {}}
             dragSnapToOrigin={true}
             onDragEnd={(e, info) => {
-                const dropZoneId = getDropZoneId(info.point.x, info.point.y);
+                const pointerEvent = e as PointerEvent;
+                const dropZoneId = detectDropZone(e.target as HTMLElement, pointerEvent.clientX, pointerEvent.clientY);
                 if (dropZoneId) {
                     onSolitaireDrop?.(card, dropZoneId);
                 }

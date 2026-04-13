@@ -24,6 +24,7 @@ export function dealWaste(currentState: SolitaireState) {
     const stock = currentState.stock;
     const waste = currentState.waste;
 
+    // if no cards in draw (stock) pile, flip cards from discard (waste) pile
     if (stock.length == 0) {
         return {
             ...currentState,
@@ -48,8 +49,21 @@ export function handleCardDrop(
     originZoneId: string,
     targetZoneId: string
 ) {
+    console.log("target:", targetZoneId, "origin:", originZoneId);
+    // data zone finding function in general-functions.ts
+    // this conditional checks valid target zones.
     if (targetZoneId.startsWith('tableau')) {
+        // information vals
         const targetColumnIndex = parseInt(targetZoneId.split('-')[1]);
+        const targetColumn = currentState.tableau[targetColumnIndex];
+        const targetCard = targetColumn.length > 0 ? targetColumn[targetColumn.length - 1] : undefined;
+
+        if (!validTableauCheck(card, targetCard)) {
+            console.log("invalid move");
+            return currentState;
+        }
+
+        // return vals
         const nextTableau = [...currentState.tableau.map(col => [...col])];
         let nextWaste = [...currentState.waste];
 
@@ -57,14 +71,17 @@ export function handleCardDrop(
             nextWaste = nextWaste.filter(c => c.id !== card.id);
         } else if (originZoneId.startsWith('tableau-')) {
             const originColumnIndex = parseInt(originZoneId.split('-')[1]);
-            const nextOriginTableauCard = nextTableau[originColumnIndex][nextTableau[originColumnIndex].length - 1];
-            if (nextOriginTableauCard) {
-                nextOriginTableauCard.faceUp = true;
+            const dragIndex = nextTableau[originColumnIndex].findIndex(c => c.id === card.id);
+            const cardsToMove = nextTableau[originColumnIndex].splice(dragIndex);
+
+            const newTopCard = nextTableau[originColumnIndex][nextTableau[originColumnIndex].length - 1];
+            if (newTopCard) {
+                newTopCard.faceUp = true;
             }
-            nextTableau[originColumnIndex] = nextTableau[originColumnIndex].filter(c => c.id !== card.id);
+
+            nextTableau[targetColumnIndex].push(...cardsToMove);
         }
 
-        nextTableau[targetColumnIndex].push(card);
         console.log("added to tableau");
         return {
             ...currentState,
