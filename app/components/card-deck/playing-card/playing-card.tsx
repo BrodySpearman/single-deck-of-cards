@@ -6,6 +6,7 @@ import { FaRegChessQueen, FaRegChessKing } from "react-icons/fa6";
 import { PIP_LAYOUTS } from "./pipFormat";
 import { motion } from "framer-motion";
 import { detectDropZone } from "../../games/general-functions";
+import { relative } from "path";
 
 
 const SUIT_SYMBOL: Record<Suit, string> = {
@@ -72,6 +73,7 @@ export default function PlayingCard({ card, onClick, faceUp, isPlayable, draggab
             data-card-drag
             drag={draggable}
             dragMomentum={false}
+            style={{ position: 'relative' }}
             whileDrag={{ zIndex: 100, pointerEvents: 'none' as any }}
             whileHover={isPlayable ? { y: -5 } : {}}
             dragSnapToOrigin={true}
