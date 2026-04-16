@@ -15,6 +15,7 @@ export function initializeGame(): SolitaireState {
     return {
         stock: stock,
         waste: [],
+        discard: [],
         foundations: [[], [], [], []],
         tableau: tableau,
     }
@@ -25,21 +26,23 @@ export function dealWaste(currentState: SolitaireState) {
     const waste = currentState.waste;
 
     // if no cards in draw (stock) pile, flip cards from discard (waste) pile
-    if (stock.length == 0) {
+    if (stock.length === 0) {
+        const allCards = [...currentState.discard, ...currentState.waste];
         return {
             ...currentState,
-            stock: [...waste].map(card => ({ ...card, faceUp: false })),
+            stock: allCards.map(card => ({ ...card, faceUp: false })),
             waste: [],
         }
     }
 
-    let newWaste: Card[] = stock.splice(0, 3);
-    newWaste.forEach((card) => card.faceUp = true);
+    const newStock = [...currentState.stock];
+    const dealt = newStock.splice(0, 3).map(card => ({ ...card, faceUp: true }));
 
     return {
         ...currentState,
-        waste: [...currentState.waste, ...newWaste],
-        stock: [...currentState.stock]
+        waste: dealt,
+        stock: newStock,
+        discard: [...currentState.discard, ...currentState.waste]
     };
 }
 
@@ -66,10 +69,22 @@ export function handleCardDrop(
         // return vals
         const nextTableau = [...currentState.tableau.map(col => [...col])];
         let nextWaste = [...currentState.waste];
+        const nextStock = [...currentState.stock];
 
         if (originZoneId === 'waste') {
-            nextWaste = nextWaste.filter(c => c.id !== card.id);
+            const cardIndex = nextWaste.findIndex(c => c.id === card.id);
+            const cardToMove = nextWaste[cardIndex];
+
+            nextTableau[targetColumnIndex].push(cardToMove);
+            nextWaste.splice(cardIndex, 1);
+
+            if (nextStock.length > 0) {
+                const [replacement] = nextStock.splice(0, 1);
+                nextWaste.unshift({ ...replacement, faceUp: true });
+            }
+
         } else if (originZoneId.startsWith('tableau-')) {
+
             const originColumnIndex = parseInt(originZoneId.split('-')[1]);
             const dragIndex = nextTableau[originColumnIndex].findIndex(c => c.id === card.id);
             const cardsToMove = nextTableau[originColumnIndex].splice(dragIndex);
@@ -86,6 +101,7 @@ export function handleCardDrop(
         return {
             ...currentState,
             waste: nextWaste,
+            stock: nextStock ?? [...currentState.stock],
             tableau: nextTableau
         };
 

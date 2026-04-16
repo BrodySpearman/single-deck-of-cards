@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { initializeGame, dealWaste, handleCardDrop } from "./playSolitaire";
 import type { SolitaireState } from "@/app/types/solitaire";
 import type { Card } from "@/app/types/deck-types";
+import { motion } from "framer-motion";
 import { GiCardJackClubs } from "react-icons/gi";
 
 export default function SolitaireTable() {
@@ -23,20 +24,25 @@ export default function SolitaireTable() {
         setGameState(initializeGame());
     };
 
+    const renderFoundation = () => {
+        return (
+            {}
+        )
+    };
+
     const renderWaste = () => {
-        return gameState!.waste.length > 0 && gameState!.waste.slice(-3).map((card, index) => {
+        return gameState!.waste.length > 0 && gameState!.waste.map((card, index) => {
             return (
-                <div
-                    key={index}
-                    className={`${styles.cardPlaceholder}`}
-                    data-drop-zone={`waste`}>
-                    <PlayingCard
-                        card={card}
-                        faceUp={true}
-                        isPlayable={index === 2}
-                        draggable={index == 2}
-                        onSolitaireDrop={(card, targetZoneId) => performCardDrop(card, 'waste', targetZoneId)}
-                    />
+                <div key={card.id} className={`${styles.cardPlaceholder}`} data-drop-zone={`waste`}>
+                    <motion.div layoutId={card.id}>
+                        <PlayingCard
+                            card={card}
+                            faceUp={true}
+                            isPlayable={index === gameState!.waste.length - 1}
+                            draggable={index == gameState!.waste.length - 1}
+                            onSolitaireDrop={(card, targetZoneId) => performCardDrop(card, 'waste', targetZoneId)}
+                        />
+                    </motion.div>
                 </div>
             );
         });
@@ -94,7 +100,10 @@ export default function SolitaireTable() {
                     key={columnIndex}
                     className={styles.tableauColumn}
                     data-drop-zone={`tableau-${columnIndex}`}>
-                    <NestedCardStack cards={column} currentIndex={0} columnIndex={columnIndex} />
+                    {column.length === 0 ?
+                        <span className={`${styles.cardPlaceholder} ${styles.tableauEmptyCol}`}></span> :
+                        <NestedCardStack cards={column} currentIndex={0} columnIndex={columnIndex} />
+                    }
                 </div>
             ))
         )
