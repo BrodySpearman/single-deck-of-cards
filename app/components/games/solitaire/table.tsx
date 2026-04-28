@@ -6,7 +6,6 @@ import { initializeGame, dealWaste, handleCardDrop } from "./playSolitaire";
 import type { SolitaireState } from "@/app/types/solitaire";
 import type { Card } from "@/app/types/deck-types";
 import { motion } from "framer-motion";
-import { GiCardJackClubs } from "react-icons/gi";
 
 export default function SolitaireTable() {
     const [gameState, setGameState] = useState<SolitaireState | null>(null);
@@ -25,27 +24,31 @@ export default function SolitaireTable() {
     };
 
     const renderFoundation = () => {
-        return (
-            gameState!.foundations.map((foundation, foundationIndex) => {
-                return (
-                    <div key={foundationIndex} className={`${styles.foundation} ${styles.cardPlaceholder}`} data-drop-zone={`foundation-${foundationIndex}`}>
-                        {foundation.length > 0 && foundation.map((card, index) => {
-                            return (
-                                <div key={card.id} className={`${styles.cardPlaceholder}`} data-drop-zone={`foundation-${foundationIndex}`}>
-                                    <PlayingCard
-                                        card={card}
-                                        faceUp={true}
-                                        isPlayable={true}
-                                        draggable={true}
-                                        onSolitaireDrop={(card, targetZoneId) => performCardDrop(card, `foundation-${foundationIndex}`, targetZoneId)}
-                                    />
-                                </div>
-                            );
-                        })}
-                    </div>
-                );
-            })
-        )
+        return gameState!.foundations.map((foundation, foundationIndex) => {
+            const topCard = foundation.length > 0 ? foundation[foundation.length - 1] : null;
+            return (
+                <div
+                    key={foundationIndex}
+                    className={topCard ? `${styles.cardPlaceholder} no-highlight` : `${styles.foundation} ${styles.cardPlaceholder} no-highlight`}
+                    data-drop-zone={`foundation-${foundationIndex}`}
+                >
+                    {topCard ? (
+                        <PlayingCard
+                            card={topCard}
+                            faceUp={true}
+                            isPlayable={true}
+                            draggable={true}
+                            onSolitaireDrop={(card, targetZoneId) => performCardDrop(card, `foundation-${foundationIndex}`, targetZoneId)}
+                        />
+                    ) : (
+                        <div className={styles.emptyFoundationSymbols}>
+                            <span><span className={styles.redSymbol}>♥</span>♠</span>
+                            <span>♣<span className={styles.redSymbol}>♦</span></span>
+                        </div>
+                    )}
+                </div>
+            );
+        });
     };
 
     const renderWaste = () => {
@@ -131,10 +134,14 @@ export default function SolitaireTable() {
         <div className={styles.solitaireTableContainer}>
             <div className={styles.topBoard}>
                 <div className={styles.foundationsContainer}>
-                    <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
-                    <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
-                    <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
-                    <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
+                    {gameState ? renderFoundation() : (
+                        <>
+                            <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
+                            <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
+                            <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
+                            <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
+                        </>
+                    )}
                 </div>
                 <div className={styles.stockAndWasteContainer}>
                     <div className={styles.waste}>

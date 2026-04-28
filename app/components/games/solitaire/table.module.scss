@@ -24,6 +24,25 @@
     .foundation {
         border: .2rem dotted #52528d;
     }
+
+    .emptyFoundationSymbols {
+        font-size: 2.2rem;
+        color: #52528d;
+        line-height: .2rem;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        letter-spacing: .2rem;
+
+        .redSymbol {
+            color: #862619;
+        }
+    }
 }
 
 .stockAndWasteContainer {
