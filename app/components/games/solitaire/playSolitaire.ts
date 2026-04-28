@@ -2,6 +2,8 @@ import { SolitaireState } from "@/app/types/solitaire";
 import type { Card } from "../../../types/deck-types";
 import { createDeck, shuffleDeck } from "../../card-deck/deck";
 
+// TODO: Break some of the state checking logic up & replace with helper functions to simplify code.
+
 export function initializeGame(): SolitaireState {
     const stock = shuffleDeck(createDeck());
     const tableau: Card[][] = [[], [], [], [], [], [], []];
@@ -15,7 +17,6 @@ export function initializeGame(): SolitaireState {
     return {
         stock: stock,
         waste: [],
-        discard: [],
         foundations: [[], [], [], []],
         tableau: tableau,
     }
@@ -27,10 +28,10 @@ export function dealWaste(currentState: SolitaireState) {
 
     // if no cards in draw (stock) pile, flip cards from discard (waste) pile
     if (stock.length === 0) {
-        const allCards = [...currentState.discard, ...currentState.waste];
+        const newStock = [...waste.map(card => ({ ...card, faceUp: false }))];
         return {
             ...currentState,
-            stock: allCards.map(card => ({ ...card, faceUp: false })),
+            stock: newStock,
             waste: [],
         }
     }
@@ -40,9 +41,8 @@ export function dealWaste(currentState: SolitaireState) {
 
     return {
         ...currentState,
-        waste: dealt,
+        waste: [...currentState.waste, ...dealt],
         stock: newStock,
-        discard: [...currentState.discard, ...currentState.waste]
     };
 }
 
@@ -69,7 +69,6 @@ export function handleCardDrop(
         // return vals
         const nextTableau = [...currentState.tableau.map(col => [...col])];
         let nextWaste = [...currentState.waste];
-        const nextStock = [...currentState.stock];
 
         if (originZoneId === 'waste') {
             const cardIndex = nextWaste.findIndex(c => c.id === card.id);
@@ -77,11 +76,6 @@ export function handleCardDrop(
 
             nextTableau[targetColumnIndex].push(cardToMove);
             nextWaste.splice(cardIndex, 1);
-
-            if (nextStock.length > 0) {
-                const [replacement] = nextStock.splice(0, 1);
-                nextWaste.unshift({ ...replacement, faceUp: true });
-            }
 
         } else if (originZoneId.startsWith('tableau-')) {
 
@@ -101,7 +95,7 @@ export function handleCardDrop(
         return {
             ...currentState,
             waste: nextWaste,
-            stock: nextStock ?? [...currentState.stock],
+            stock: [...currentState.stock],
             tableau: nextTableau
         };
 

@@ -52,15 +52,18 @@ export default function SolitaireTable() {
     };
 
     const renderWaste = () => {
-        return gameState!.waste.length > 0 && gameState!.waste.map((card, index) => {
+        const visibleCards = gameState!.waste.slice(-3);
+
+        return visibleCards.length > 0 && visibleCards.map((card, index) => {
+            const isTopCard = index === visibleCards.length - 1;
             return (
                 <div key={card.id} className={`${styles.cardPlaceholder}`} data-drop-zone={`waste`}>
                     <motion.div layoutId={card.id}>
                         <PlayingCard
                             card={card}
                             faceUp={true}
-                            isPlayable={index === gameState!.waste.length - 1}
-                            draggable={index == gameState!.waste.length - 1}
+                            isPlayable={isTopCard}
+                            draggable={isTopCard}
                             onSolitaireDrop={(card, targetZoneId) => performCardDrop(card, 'waste', targetZoneId)}
                         />
                     </motion.div>
