@@ -8,7 +8,10 @@ export function detectDropZone(draggedEl: HTMLElement, x: number, y: number): st
     for (const dropZone of dropZones) {
         const rect = dropZone.getBoundingClientRect();
         if (x >= rect.left && x <= rect.right && y >= rect.top) {
-            return dropZone.getAttribute('data-drop-zone');
+            const zoneID = dropZone.getAttribute('data-drop-zone');
+            if (zoneID?.startsWith('tableau') || y <= rect.bottom) {
+                return zoneID;
+            }
         }
     }
     return null;

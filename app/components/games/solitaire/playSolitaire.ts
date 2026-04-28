@@ -78,15 +78,12 @@ export function handleCardDrop(
             nextWaste.splice(cardIndex, 1);
 
         } else if (originZoneId.startsWith('tableau-')) {
-
             const originColumnIndex = parseInt(originZoneId.split('-')[1]);
+
             const dragIndex = nextTableau[originColumnIndex].findIndex(c => c.id === card.id);
             const cardsToMove = nextTableau[originColumnIndex].splice(dragIndex);
 
-            const newTopCard = nextTableau[originColumnIndex][nextTableau[originColumnIndex].length - 1];
-            if (newTopCard) {
-                newTopCard.faceUp = true;
-            }
+            flipTopCard(nextTableau[originColumnIndex]);
 
             nextTableau[targetColumnIndex].push(...cardsToMove);
         }
@@ -105,11 +102,22 @@ export function handleCardDrop(
         let nextWaste = [...currentState.waste];
         let nextTableau = [...currentState.tableau.map(col => [...col])];
 
+        const targetFoundation = nextFoundations[targetFoundationIndex];
+        const targetCard = targetFoundation.length > 0 ? targetFoundation[targetFoundation.length - 1] : undefined;
+
+        if (!validFoundationCheck(card, targetCard)) {
+            console.log("invalid move");
+            return currentState;
+        }
+
         if (originZoneId === 'waste') {
             nextWaste = nextWaste.filter(c => c.id !== card.id);
+
         } else if (originZoneId.startsWith('tableau-')) {
             const originColumnIndex = parseInt(originZoneId.split('-')[1]);
+
             nextTableau[originColumnIndex] = nextTableau[originColumnIndex].filter(c => c.id !== card.id);
+            flipTopCard(nextTableau[originColumnIndex]);
         }
 
         nextFoundations[targetFoundationIndex].push(card);
@@ -155,4 +163,11 @@ function checkNextRank(mode: 'descending' | 'ascending', rank1: Card["rank"], ra
     const index1 = rankOrder.indexOf(rank1);
     const index2 = rankOrder.indexOf(rank2);
     return mode === 'descending' ? index1 === index2 - 1 : index1 === index2 + 1;
+}
+
+/// Small general mechanics ///
+
+function flipTopCard(column: Card[]): void {
+    const topCard = column[column.length - 1];
+    if (topCard) topCard.faceUp = true;
 }
