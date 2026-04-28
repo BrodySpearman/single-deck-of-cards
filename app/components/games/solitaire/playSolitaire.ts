@@ -130,7 +130,9 @@ export function handleCardDrop(
     return currentState;
 }
 
-export function validTableauCheck(draggedCard: Card, targetCard?: Card): boolean {
+/// helper functions ///
+
+function validTableauCheck(draggedCard: Card, targetCard?: Card): boolean {
     if (!targetCard) {
         return draggedCard.rank == 'K';
     }
@@ -142,7 +144,7 @@ export function validTableauCheck(draggedCard: Card, targetCard?: Card): boolean
     return isValid;
 }
 
-export function validFoundationCheck(draggedCard: Card, targetCard?: Card): boolean {
+function validFoundationCheck(draggedCard: Card, targetCard?: Card): boolean {
     if (!targetCard) {
         return draggedCard.rank == 'A';
     }
@@ -154,9 +156,7 @@ export function validFoundationCheck(draggedCard: Card, targetCard?: Card): bool
     return isValid;
 }
 
-/// helper functions ///
-
-export function checkNextRank(mode: 'descending' | 'ascending', rank1: Card["rank"], rank2: Card["rank"]): boolean {
+function checkNextRank(mode: 'descending' | 'ascending', rank1: Card["rank"], rank2: Card["rank"]): boolean {
     const rankOrder: Card["rank"][] = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
     const index1 = rankOrder.indexOf(rank1);
     const index2 = rankOrder.indexOf(rank2);

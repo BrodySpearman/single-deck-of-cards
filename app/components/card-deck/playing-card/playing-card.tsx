@@ -6,8 +6,6 @@ import { FaRegChessQueen, FaRegChessKing } from "react-icons/fa6";
 import { PIP_LAYOUTS } from "./pipFormat";
 import { motion } from "framer-motion";
 import { detectDropZone } from "../../games/general-functions";
-import { relative } from "path";
-
 
 const SUIT_SYMBOL: Record<Suit, string> = {
     spades: '♠',

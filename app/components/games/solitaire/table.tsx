@@ -26,7 +26,25 @@ export default function SolitaireTable() {
 
     const renderFoundation = () => {
         return (
-            {}
+            gameState!.foundations.map((foundation, foundationIndex) => {
+                return (
+                    <div key={foundationIndex} className={`${styles.foundation} ${styles.cardPlaceholder}`} data-drop-zone={`foundation-${foundationIndex}`}>
+                        {foundation.length > 0 && foundation.map((card, index) => {
+                            return (
+                                <div key={card.id} className={`${styles.cardPlaceholder}`} data-drop-zone={`foundation-${foundationIndex}`}>
+                                    <PlayingCard
+                                        card={card}
+                                        faceUp={true}
+                                        isPlayable={true}
+                                        draggable={true}
+                                        onSolitaireDrop={(card, targetZoneId) => performCardDrop(card, `foundation-${foundationIndex}`, targetZoneId)}
+                                    />
+                                </div>
+                            );
+                        })}
+                    </div>
+                );
+            })
         )
     };
 
