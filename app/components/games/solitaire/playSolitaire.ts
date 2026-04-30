@@ -52,88 +52,73 @@ export function handleCardDrop(
     originZoneId: string,
     targetZoneId: string
 ) {
-    console.log("target:", targetZoneId, "origin:", originZoneId);
     // data zone finding function in general-functions.ts
-    // this conditional checks valid target zones.
-    if (targetZoneId.startsWith('tableau')) {
-        // information vals
+    const nextTableau = [...currentState.tableau.map(col => [...col])];
+    let nextWaste = [...currentState.waste];
+    const nextFoundations = [...currentState.foundations.map(foundation => [...foundation])];
+
+    let cardsToMove: Card[] = [card];
+
+    // origin zones //
+    if (originZoneId === 'waste') {
+        const cardIndex = nextWaste.findIndex(c => c.id === card.id);
+        nextWaste.splice(cardIndex, 1);
+
+    } else if (originZoneId.startsWith('tableau-')) {
+        const originColumnIndex = parseInt(originZoneId.split('-')[1]);
+        const dragIndex = nextTableau[originColumnIndex].findIndex(c => c.id === card.id);
+        cardsToMove = nextTableau[originColumnIndex].splice(dragIndex);
+        flipTopCard(nextTableau[originColumnIndex]);
+    }
+
+    // target zones //
+    if (targetZoneId.startsWith('tableau-')) {
         const targetColumnIndex = parseInt(targetZoneId.split('-')[1]);
-        const targetColumn = currentState.tableau[targetColumnIndex];
-        const targetCard = targetColumn.length > 0 ? targetColumn[targetColumn.length - 1] : undefined;
+        const targetCard = nextTableau[targetColumnIndex].at(-1);
 
-        if (!validTableauCheck(card, targetCard)) {
-            console.log("invalid move");
-            return currentState;
-        }
+        if (!validTableauCheck(card, targetCard)) return currentState;
+        nextTableau[targetColumnIndex].push(...cardsToMove);
 
-        // return vals
-        const nextTableau = [...currentState.tableau.map(col => [...col])];
-        let nextWaste = [...currentState.waste];
-
-        if (originZoneId === 'waste') {
-            const cardIndex = nextWaste.findIndex(c => c.id === card.id);
-            const cardToMove = nextWaste[cardIndex];
-
-            nextTableau[targetColumnIndex].push(cardToMove);
-            nextWaste.splice(cardIndex, 1);
-
-        } else if (originZoneId.startsWith('tableau-')) {
-            const originColumnIndex = parseInt(originZoneId.split('-')[1]);
-
-            const dragIndex = nextTableau[originColumnIndex].findIndex(c => c.id === card.id);
-            const cardsToMove = nextTableau[originColumnIndex].splice(dragIndex);
-
-            flipTopCard(nextTableau[originColumnIndex]);
-
-            nextTableau[targetColumnIndex].push(...cardsToMove);
-        }
-
-        console.log("added to tableau");
-        return {
-            ...currentState,
-            waste: nextWaste,
-            stock: [...currentState.stock],
-            tableau: nextTableau
-        };
-
-    } else if (targetZoneId.startsWith('foundation')) {
+    } else if (targetZoneId.startsWith('foundation-')) {
         const targetFoundationIndex = parseInt(targetZoneId.split('-')[1]);
-        const nextFoundations = [...currentState.foundations.map(foundation => [...foundation])];
-        let nextWaste = [...currentState.waste];
-        let nextTableau = [...currentState.tableau.map(col => [...col])];
+        const targetCard = nextFoundations[targetFoundationIndex].at(-1);
 
-        const targetFoundation = nextFoundations[targetFoundationIndex];
-        const targetCard = targetFoundation.length > 0 ? targetFoundation[targetFoundation.length - 1] : undefined;
-
-        if (!validFoundationCheck(card, targetCard)) {
-            console.log("invalid move");
-            return currentState;
-        }
-
-        if (originZoneId === 'waste') {
-            nextWaste = nextWaste.filter(c => c.id !== card.id);
-
-        } else if (originZoneId.startsWith('tableau-')) {
-            const originColumnIndex = parseInt(originZoneId.split('-')[1]);
-
-            nextTableau[originColumnIndex] = nextTableau[originColumnIndex].filter(c => c.id !== card.id);
-            flipTopCard(nextTableau[originColumnIndex]);
-        }
-
+        if (!validFoundationCheck(card, targetCard)) return currentState;
         nextFoundations[targetFoundationIndex].push(card);
-        return {
-            ...currentState,
-            waste: nextWaste,
-            foundations: nextFoundations,
-            tableau: nextTableau
-        };
+    } else {
+        return currentState;
+    }
+
+    return {
+        ...currentState,
+        waste: nextWaste,
+        tableau: nextTableau,
+        foundations: nextFoundations,
+    }
+}
+
+/// Assisted Drops /// 
+
+// auto-move upon clicking valid card
+export function smartClick(currentState: SolitaireState, card: Card, originZoneId: string) {
+    for (let i = 0; i < 4; i++) {
+        const targetCard = currentState.foundations[i].at(-1);
+        if (validFoundationCheck(card, targetCard)) {
+            return handleCardDrop(currentState, card, originZoneId, `foundation-${i}`)
+        }
+    }
+
+    for (let i = 0; i < 7; i++) {
+        const targetCard = currentState.tableau[i].at(-1);
+        if (validTableauCheck(card, targetCard)) {
+            return handleCardDrop(currentState, card, originZoneId, `tableau-${i}`)
+        }
     }
 
     return currentState;
 }
 
 /// helper functions ///
-
 function validTableauCheck(draggedCard: Card, targetCard?: Card): boolean {
     if (!targetCard) {
         return draggedCard.rank == 'K';

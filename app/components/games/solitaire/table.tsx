@@ -2,10 +2,10 @@
 import styles from "./table.module.scss";
 import PlayingCard from "../../card-deck/playing-card/playing-card";
 import { useState, useEffect } from "react";
-import { initializeGame, dealWaste, handleCardDrop } from "./playSolitaire";
+import { initializeGame, dealWaste, handleCardDrop, smartClick } from "./playSolitaire";
 import type { SolitaireState } from "@/app/types/solitaire";
 import type { Card } from "@/app/types/deck-types";
-import { motion } from "framer-motion";
+import { LayoutGroup, motion } from "framer-motion";
 
 export default function SolitaireTable() {
     const [gameState, setGameState] = useState<SolitaireState | null>(null);
@@ -23,6 +23,10 @@ export default function SolitaireTable() {
         setGameState(initializeGame());
     };
 
+    const handleSmartClick = (card: Card, originZoneId: string) => {
+        setGameState(smartClick(gameState!, card, originZoneId));
+    }
+
     const renderFoundation = () => {
         return gameState!.foundations.map((foundation, foundationIndex) => {
             const topCard = foundation.length > 0 ? foundation[foundation.length - 1] : null;
@@ -31,15 +35,28 @@ export default function SolitaireTable() {
                     key={foundationIndex}
                     className={topCard ? `${styles.cardPlaceholder} no-highlight` : `${styles.foundation} ${styles.cardPlaceholder} no-highlight`}
                     data-drop-zone={`foundation-${foundationIndex}`}
+                    style={{ position: 'relative' }}
                 >
                     {topCard ? (
-                        <PlayingCard
-                            card={topCard}
-                            faceUp={true}
-                            isPlayable={true}
-                            draggable={true}
-                            onSolitaireDrop={(card, targetZoneId) => performCardDrop(card, `foundation-${foundationIndex}`, targetZoneId)}
-                        />
+                        foundation.map((card, cardIndex) => (
+                            <div
+                                key={card.id}
+                                style={{
+                                    position: cardIndex === 0 ? 'relative' : 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    zIndex: cardIndex + 10
+                                }}
+                            >
+                                <PlayingCard
+                                    card={card}
+                                    faceUp={true}
+                                    isPlayable={card.id === topCard.id}
+                                    draggable={card.id === topCard.id}
+                                    onSolitaireDrop={(card, targetZoneId) => performCardDrop(card, `foundation-${foundationIndex}`, targetZoneId)}
+                                />
+                            </div>
+                        ))
                     ) : (
                         <div className={styles.emptyFoundationSymbols}>
                             <span><span className={styles.redSymbol}>♥</span>♠</span>
@@ -58,15 +75,14 @@ export default function SolitaireTable() {
             const isTopCard = index === visibleCards.length - 1;
             return (
                 <div key={card.id} className={`${styles.cardPlaceholder}`} data-drop-zone={`waste`}>
-                    <motion.div layoutId={card.id}>
-                        <PlayingCard
-                            card={card}
-                            faceUp={true}
-                            isPlayable={isTopCard}
-                            draggable={isTopCard}
-                            onSolitaireDrop={(card, targetZoneId) => performCardDrop(card, 'waste', targetZoneId)}
-                        />
-                    </motion.div>
+                    <PlayingCard
+                        card={card}
+                        faceUp={true}
+                        isPlayable={isTopCard}
+                        draggable={isTopCard}
+                        onClick={isTopCard ? () => handleSmartClick(card, 'waste') : undefined}
+                        onSolitaireDrop={(card, targetZoneId) => performCardDrop(card, 'waste', targetZoneId)}
+                    />
                 </div>
             );
         });
@@ -106,6 +122,7 @@ export default function SolitaireTable() {
                     faceUp={card.faceUp}
                     isPlayable={card.faceUp}
                     draggable={card.faceUp}
+                    onClick={card.faceUp ? () => handleSmartClick(card, `tableau-${columnIndex}`) : undefined}
                     onSolitaireDrop={(card, targetZoneId) => performCardDrop(card, `tableau-${columnIndex}`, targetZoneId)}
                 >
                     <div style={{ marginTop: childMargin }}>
@@ -134,36 +151,38 @@ export default function SolitaireTable() {
     }
 
     return (
-        <div className={styles.solitaireTableContainer}>
-            <div className={styles.topBoard}>
-                <div className={styles.foundationsContainer}>
-                    {gameState ? renderFoundation() : (
-                        <>
-                            <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
-                            <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
-                            <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
-                            <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
-                        </>
-                    )}
-                </div>
-                <div className={styles.stockAndWasteContainer}>
-                    <div className={styles.waste}>
-                        {gameState ? renderWaste() : null}
+        <LayoutGroup>
+            <div className={styles.solitaireTableContainer}>
+                <div className={styles.topBoard}>
+                    <div className={styles.foundationsContainer}>
+                        {gameState ? renderFoundation() : (
+                            <>
+                                <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
+                                <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
+                                <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
+                                <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
+                            </>
+                        )}
                     </div>
-                    <div className={styles.stock}>
-                        <div
-                            style={{ borderColor: gameState ? "transparent" : "#530048" }}
-                            className={`${styles.drawPile} ${styles.cardPlaceholder}`}
-                        >
-                            {gameState ? renderStock() : null}
+                    <div className={styles.stockAndWasteContainer}>
+                        <div className={styles.waste}>
+                            {gameState ? renderWaste() : null}
+                        </div>
+                        <div className={styles.stock}>
+                            <div
+                                style={{ borderColor: gameState ? "transparent" : "#530048" }}
+                                className={`${styles.drawPile} ${styles.cardPlaceholder}`}
+                            >
+                                {gameState ? renderStock() : null}
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div className={styles.tableauContainer}>
+                    {gameState && renderTableau()}
+                </div>
+                <button className={styles.startBtn} onClick={handleStartGame}>Start Game</button>
             </div>
-            <div className={styles.tableauContainer}>
-                {gameState && renderTableau()}
-            </div>
-            <button className={styles.startBtn} onClick={handleStartGame}>Start Game</button>
-        </div>
+        </LayoutGroup>
     );
 }

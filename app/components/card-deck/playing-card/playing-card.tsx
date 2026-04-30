@@ -73,8 +73,13 @@ export default function PlayingCard({ card, onClick, faceUp, isPlayable, draggab
             dragMomentum={false}
             style={{ position: 'relative' }}
             whileDrag={{ zIndex: 100, pointerEvents: 'none' as any }}
-            whileHover={isPlayable ? { y: -5 } : {}}
             dragSnapToOrigin={true}
+            layoutId={card.id}
+            layout
+            transition={{
+                layout: { type: 'spring', stiffness: 300, damping: 30 },
+                default: { duration: 0.2 }
+            }}
             onDragEnd={(e, info) => {
                 const pointerEvent = e as PointerEvent;
                 const dropZoneId = detectDropZone(e.target as HTMLElement, pointerEvent.clientX, pointerEvent.clientY);
@@ -83,11 +88,11 @@ export default function PlayingCard({ card, onClick, faceUp, isPlayable, draggab
                 }
             }}
             dragElastic={1}
-            transition={{ duration: 0.2 }}
         >
-            <div
+            <motion.div
                 onClick={onClick}
                 className={`${styles.playingCardContainer} no-highlight`}
+                whileHover={isPlayable ? { y: -5 } : {}}
                 style={{
                     border: `.1rem solid ${card.faceUp ? card.suit === 'hearts' || card.suit === 'diamonds' ? '#861111ff' : '#b5b5b5' : faceDownBorderColor}`,
                     boxShadow: `0px 0px 3px 1px ${card.faceUp ? card.suit === 'hearts' || card.suit === 'diamonds' ? '#861111ff' : '#b5b5b5b3' : faceDownBorderColor}`,
@@ -109,7 +114,7 @@ export default function PlayingCard({ card, onClick, faceUp, isPlayable, draggab
                     </> :
                     renderCardBack()
                 }
-            </div>
+            </motion.div>
             {children}
         </motion.div>
     );
