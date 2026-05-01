@@ -7,7 +7,11 @@ import type { SolitaireState } from "@/app/types/solitaire";
 import type { Card } from "@/app/types/deck-types";
 import { LayoutGroup, motion } from "framer-motion";
 
+const DEBUG = false;
+
 export default function SolitaireTable() {
+    const [debugCounts, setDebugCounts] = useState([0, 0]); // Optional stock and waste counts for debugging
+
     const [gameState, setGameState] = useState<SolitaireState | null>(null);
 
     const performCardDrop = (card: Card, originZoneId: string, targetZoneId: string) => {
@@ -53,6 +57,7 @@ export default function SolitaireTable() {
                                     faceUp={true}
                                     isPlayable={card.id === topCard.id}
                                     draggable={card.id === topCard.id}
+                                    onClick={card.id === topCard.id ? () => handleSmartClick(card, `foundation-${foundationIndex}`) : undefined}
                                     onSolitaireDrop={(card, targetZoneId) => performCardDrop(card, `foundation-${foundationIndex}`, targetZoneId)}
                                 />
                             </div>
@@ -74,7 +79,14 @@ export default function SolitaireTable() {
         return visibleCards.length > 0 && visibleCards.map((card, index) => {
             const isTopCard = index === visibleCards.length - 1;
             return (
-                <div key={card.id} className={`${styles.cardPlaceholder}`} data-drop-zone={`waste`}>
+                <motion.div
+                    key={card.id}
+                    className={`${styles.cardPlaceholder}`}
+                    data-drop-zone={`waste`}
+                    initial={{ x: 120, opacity: .25 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ type: 'spring', stiffness: 600, damping: 50 }}
+                >
                     <PlayingCard
                         card={card}
                         faceUp={true}
@@ -83,7 +95,7 @@ export default function SolitaireTable() {
                         onClick={isTopCard ? () => handleSmartClick(card, 'waste') : undefined}
                         onSolitaireDrop={(card, targetZoneId) => performCardDrop(card, 'waste', targetZoneId)}
                     />
-                </div>
+                </motion.div>
             );
         });
     };
@@ -98,7 +110,13 @@ export default function SolitaireTable() {
         }
         return (
             <button className={styles.drawPileBtn} onClick={handleDealWaste}>
-                <PlayingCard card={gameState!.stock[gameState!.stock.length - 1]} faceUp={false} isPlayable={true} draggable={false} />
+                <PlayingCard
+                    enableLayoutID={false}
+                    card={gameState!.stock[gameState!.stock.length - 1]}
+                    faceUp={false}
+                    isPlayable={false}
+                    draggable={false}
+                />
             </button>
         );
     }
@@ -167,6 +185,9 @@ export default function SolitaireTable() {
                     <div className={styles.stockAndWasteContainer}>
                         <div className={styles.waste}>
                             {gameState ? renderWaste() : null}
+                            {DEBUG ? (
+                                <div></div>
+                            ) : null}
                         </div>
                         <div className={styles.stock}>
                             <div

@@ -4,9 +4,10 @@ const SUITS: Suit[] = ['spades', 'hearts', 'diamonds', 'clubs'];
 const RANKS: Rank[] = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
 export function createDeck(): Card[] {
+    const gameID = crypto.randomUUID().slice(0, 6);
     return SUITS.flatMap((suit) =>
         RANKS.map((rank) => ({
-            id: `${rank}-${suit}`,
+            id: `${gameID}-${rank}-${suit}`,
             suit,
             rank,
             color: suit === 'hearts' || suit === 'diamonds' ? 'red' : 'black',

@@ -37,7 +37,7 @@ export function dealWaste(currentState: SolitaireState) {
     }
 
     const newStock = [...currentState.stock];
-    const dealt = newStock.splice(0, 3).map(card => ({ ...card, faceUp: true }));
+    const dealt = newStock.splice(-3).map(card => ({ ...card, faceUp: true }));
 
     return {
         ...currentState,
@@ -52,6 +52,8 @@ export function handleCardDrop(
     originZoneId: string,
     targetZoneId: string
 ) {
+    if (originZoneId === targetZoneId) return currentState;
+
     // data zone finding function in general-functions.ts
     const nextTableau = [...currentState.tableau.map(col => [...col])];
     let nextWaste = [...currentState.waste];
@@ -69,6 +71,10 @@ export function handleCardDrop(
         const dragIndex = nextTableau[originColumnIndex].findIndex(c => c.id === card.id);
         cardsToMove = nextTableau[originColumnIndex].splice(dragIndex);
         flipTopCard(nextTableau[originColumnIndex]);
+
+    } else if (originZoneId.startsWith('foundation-')) {
+        const originFoundationIndex = parseInt(originZoneId.split('-')[1]);
+        nextFoundations[originFoundationIndex].pop();
     }
 
     // target zones //
@@ -85,6 +91,11 @@ export function handleCardDrop(
 
         if (!validFoundationCheck(card, targetCard)) return currentState;
         nextFoundations[targetFoundationIndex].push(card);
+
+        if (validWinConditionCheck(nextFoundations)) {
+            console.log('YOU WIN!');
+        }
+
     } else {
         return currentState;
     }
@@ -109,6 +120,7 @@ export function smartClick(currentState: SolitaireState, card: Card, originZoneI
     }
 
     for (let i = 0; i < 7; i++) {
+        if (originZoneId === `tableau-${i}`) continue;
         const targetCard = currentState.tableau[i].at(-1);
         if (validTableauCheck(card, targetCard)) {
             return handleCardDrop(currentState, card, originZoneId, `tableau-${i}`)
@@ -127,7 +139,6 @@ function validTableauCheck(draggedCard: Card, targetCard?: Card): boolean {
     const isOneRankLower = checkNextRank('descending', draggedCard.rank, targetCard.rank);
 
     const isValid = isDifferentColor && isOneRankLower;
-    console.log(isValid);
     return isValid;
 }
 
@@ -139,7 +150,6 @@ function validFoundationCheck(draggedCard: Card, targetCard?: Card): boolean {
     const isOneRankLower = checkNextRank('ascending', draggedCard.rank, targetCard.rank);
 
     const isValid = isSameSuit && isOneRankLower;
-    console.log(isValid);
     return isValid;
 }
 
@@ -148,6 +158,13 @@ function checkNextRank(mode: 'descending' | 'ascending', rank1: Card["rank"], ra
     const index1 = rankOrder.indexOf(rank1);
     const index2 = rankOrder.indexOf(rank2);
     return mode === 'descending' ? index1 === index2 - 1 : index1 === index2 + 1;
+}
+
+function validWinConditionCheck(foundations: Card[][]): boolean {
+    if (foundations.every(f => f[f.length - 1].rank === 'K')) {
+        return true;
+    }
+    return false;
 }
 
 /// Small general mechanics ///

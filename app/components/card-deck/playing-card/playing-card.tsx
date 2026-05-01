@@ -6,6 +6,7 @@ import { FaRegChessQueen, FaRegChessKing } from "react-icons/fa6";
 import { PIP_LAYOUTS } from "./pipFormat";
 import { motion } from "framer-motion";
 import { detectDropZone } from "../../games/general-functions";
+import { useRef } from "react";
 
 const SUIT_SYMBOL: Record<Suit, string> = {
     spades: '♠',
@@ -26,11 +27,21 @@ interface playingCardProps {
     onClick?: () => void;
     isPlayable?: boolean;
     draggable?: boolean;
+    enableLayoutID?: boolean;
     onSolitaireDrop?: (card: Card, targetZoneId: string) => void;
     children?: React.ReactNode;
 }
 
-export default function PlayingCard({ card, onClick, faceUp, isPlayable, draggable, onSolitaireDrop, children }: playingCardProps) {
+export default function PlayingCard({
+    card,
+    onClick,
+    faceUp,
+    isPlayable,
+    draggable,
+    enableLayoutID = true,
+    onSolitaireDrop,
+    children }: playingCardProps) {
+
     const faceDownBorderColor = '#222f79';
 
     const renderCardBack = () => {
@@ -65,7 +76,7 @@ export default function PlayingCard({ card, onClick, faceUp, isPlayable, draggab
             </span>
         ));
     }
-
+    const cardRef = useRef<HTMLDivElement>(null); // Needed for more complex animation work
     return (
         <motion.div
             data-card-drag
@@ -74,8 +85,8 @@ export default function PlayingCard({ card, onClick, faceUp, isPlayable, draggab
             style={{ position: 'relative' }}
             whileDrag={{ zIndex: 100, pointerEvents: 'none' as any }}
             dragSnapToOrigin={true}
-            layoutId={card.id}
-            layout
+            layoutId={enableLayoutID ? card.id : undefined}
+            layout={enableLayoutID}
             transition={{
                 layout: { type: 'spring', stiffness: 300, damping: 30 },
                 default: { duration: 0.2 }
@@ -88,6 +99,12 @@ export default function PlayingCard({ card, onClick, faceUp, isPlayable, draggab
                 }
             }}
             dragElastic={1}
+            onLayoutAnimationStart={() => {
+                if (cardRef.current) cardRef.current.style.zIndex = '9999';
+            }}
+            onLayoutAnimationComplete={() => {
+                if (cardRef.current) cardRef.current.style.zIndex = '999';
+            }}
         >
             <motion.div
                 onClick={onClick}
