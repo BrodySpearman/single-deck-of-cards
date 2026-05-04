@@ -2,24 +2,39 @@
 import styles from "./table.module.scss";
 import PlayingCard from "../../card-deck/playing-card/playing-card";
 import { useState, useEffect } from "react";
-import { initializeGame, dealWaste, handleCardDrop, smartClick } from "./playSolitaire";
+import { initializeGame, dealWaste, handleCardDrop, smartClick, finishWin, validWinConditionCheck } from "./playSolitaire";
 import type { SolitaireState } from "@/app/types/solitaire";
 import type { Card } from "@/app/types/deck-types";
 import { LayoutGroup, motion } from "framer-motion";
+import { TbCards } from "react-icons/tb";
+import { IoSettingsOutline } from "react-icons/io5";
 
-const DEBUG = false;
+import useSound from "use-sound";
 
 export default function SolitaireTable() {
-    const [debugCounts, setDebugCounts] = useState([0, 0]); // Optional stock and waste counts for debugging
-
     const [gameState, setGameState] = useState<SolitaireState | null>(null);
+    const [showWinModal, setShowWinModal] = useState(false);
 
+    // Sounds // 
+    const [playDropSound] = useSound('/audio/cardDrop.mp3', {
+        volume: .5,
+        playbackRate: 2,
+    })
+
+    const [playWasteDealSound] = useSound('/audio/cardDrop.mp3', {
+        volume: .55,
+        playbackRate: .9,
+    })
+
+    // User interactions //
     const performCardDrop = (card: Card, originZoneId: string, targetZoneId: string) => {
         const newGameState = handleCardDrop(gameState!, card, originZoneId, targetZoneId);
         setGameState(newGameState);
+        playDropSound();
     };
 
     const handleDealWaste = () => {
+        playWasteDealSound();
         setGameState(dealWaste(gameState!));
     };
 
@@ -29,8 +44,34 @@ export default function SolitaireTable() {
 
     const handleSmartClick = (card: Card, originZoneId: string) => {
         setGameState(smartClick(gameState!, card, originZoneId));
+        playDropSound();
     }
 
+    // Special gameplay animations //
+    useEffect(() => {
+        if (!gameState) return;
+
+        const isStockEmpty = gameState.stock.length === 0;
+        const isWasteEmpty = gameState.waste.length === 0;
+
+        const allTableauCardsFaceUp = gameState.tableau.every(
+            column => column.length === 0 || column[0].faceUp
+        );
+
+        const canAutoFinish = isStockEmpty && isWasteEmpty && allTableauCardsFaceUp;
+        if (canAutoFinish) {
+            const isGameWon = validWinConditionCheck(gameState.foundations);
+            if (!isGameWon) {
+                const timer = setTimeout(() => {
+                    setGameState(finishWin(gameState!));
+                }, 125);
+
+                return () => clearTimeout(timer);
+            }
+        }
+    }, [gameState, playDropSound]);
+
+    // Table renderers //
     const renderFoundation = () => {
         return gameState!.foundations.map((foundation, foundationIndex) => {
             const topCard = foundation.length > 0 ? foundation[foundation.length - 1] : null;
@@ -104,7 +145,9 @@ export default function SolitaireTable() {
         if (gameState!.stock.length === 0) {
             return (
                 <button className={`${styles.drawPile} ${styles.cardPlaceholder} ${styles.emptyPile}`} onClick={handleDealWaste}>
-                    Draw
+                    <div className={styles.emptyPileSymbOuter}>
+                        <div className={styles.emptyPileSymbInner}></div>
+                    </div>
                 </button>
             );
         }
@@ -171,38 +214,50 @@ export default function SolitaireTable() {
     return (
         <LayoutGroup>
             <div className={styles.solitaireTableContainer}>
-                <div className={styles.topBoard}>
-                    <div className={styles.foundationsContainer}>
-                        {gameState ? renderFoundation() : (
-                            <>
-                                <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
-                                <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
-                                <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
-                                <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
-                            </>
-                        )}
-                    </div>
-                    <div className={styles.stockAndWasteContainer}>
-                        <div className={styles.waste}>
-                            {gameState ? renderWaste() : null}
-                            {DEBUG ? (
-                                <div></div>
-                            ) : null}
+                <div className={styles.boardWrapper}>
+                    <div className={styles.topBoard}>
+                        <div className={styles.foundationsContainer}>
+                            {gameState ? renderFoundation() : (
+                                <>
+                                    <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
+                                    <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
+                                    <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
+                                    <span className={`${styles.foundation} ${styles.cardPlaceholder}`}></span>
+                                </>
+                            )}
                         </div>
-                        <div className={styles.stock}>
-                            <div
-                                style={{ borderColor: gameState ? "transparent" : "#530048" }}
-                                className={`${styles.drawPile} ${styles.cardPlaceholder}`}
-                            >
-                                {gameState ? renderStock() : null}
+                        <div className={styles.stockAndWasteContainer}>
+                            <div className={styles.waste}>
+                                {gameState ? renderWaste() : null}
+                            </div>
+                            <div className={styles.stock}>
+                                <div
+                                    style={{ borderColor: gameState ? "transparent" : "#530048" }}
+                                    className={`${styles.drawPile} ${styles.cardPlaceholder}`}
+                                >
+                                    {gameState ? renderStock() : null}
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div className={styles.tableauContainer}>
+                        {gameState && renderTableau()}
+                    </div>
                 </div>
-                <div className={styles.tableauContainer}>
-                    {gameState && renderTableau()}
+                <div className={styles.startBtnOuter}>
+                    <button className={styles.startBtn} onClick={handleStartGame}>
+                        <span className={styles.startBtnSym}>♠</span>
+                        <span className={styles.startBtnText}> PLAY 3 CARD </span>
+                        <span className={styles.startBtnSym}>♠</span>
+                    </button>
+                    <div className={styles.selectGameType}>
+                        <TbCards />
+                    </div>
+                    <div className={styles.gameSettings}>
+                        <IoSettingsOutline />
+                    </div>
                 </div>
-                <button className={styles.startBtn} onClick={handleStartGame}>Start Game</button>
+
             </div>
         </LayoutGroup>
     );

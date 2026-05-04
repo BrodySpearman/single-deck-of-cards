@@ -86,7 +86,7 @@ export default function PlayingCard({
             whileDrag={{ zIndex: 100, pointerEvents: 'none' as any }}
             dragSnapToOrigin={true}
             layoutId={enableLayoutID ? card.id : undefined}
-            layout={enableLayoutID}
+            layout={enableLayoutID ? "position" : false}
             transition={{
                 layout: { type: 'spring', stiffness: 300, damping: 30 },
                 default: { duration: 0.2 }
