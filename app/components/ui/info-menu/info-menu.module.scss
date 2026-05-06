@@ -1,0 +1,135 @@
+.menuShell {
+    position: absolute;
+    bottom: 3rem;
+    right: 50%;
+    transform: translateX(50%);
+    padding: .3rem;
+    background-color: #16141b;
+    border: .13rem solid #414141af;
+    border-radius: 2rem;
+    box-shadow: 0 .1rem .1rem 0 rgba(0, 0, 0, .5);
+}
+
+.infoMenuContainer {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: #3030307c;
+    border: .1rem solid #3a3a3a;
+    border-radius: 1.5rem;
+    height: 2.4rem;
+    overflow: hidden;
+    transition: all .2s ease-in-out;
+    z-index: 50;
+
+    .selectOtherGames,
+    .gameSettings {
+        width: 3.5rem;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #7171b8;
+        font-size: 1.3rem;
+        cursor: pointer;
+    }
+
+    .selectOtherGames {
+        border-right: .1rem solid #313131dc;
+        padding-left: 1rem;
+        padding-right: .3rem;
+        margin-left: -1rem;
+    }
+
+    .navBtn {
+        transition: all .2s ease;
+
+        &:hover {
+            background-color: #7171b8;
+            color: #cfe7d3;
+            transition: all .2s ease;
+        }
+    }
+
+    .startBtn {
+        background-color: transparent;
+        height: 100%;
+        color: #7171b8;
+        font-size: 1.3rem;
+        padding-left: .5rem;
+        padding-right: .9rem;
+        transition: all .2s ease;
+        cursor: pointer;
+
+        font-family: var(--font-outfit);
+
+        .startBtnSym {
+            padding-left: .5rem;
+            padding-right: .5rem;
+            color: #96201c;
+            font-size: 1.5rem;
+            line-height: 2rem;
+        }
+
+        &:hover {
+            background-color: #00681c;
+            color: #cfe7d3;
+            transition: all .2s ease;
+
+            .startBtnSym {
+                color: #141414;
+                transition: all .2s ease;
+            }
+        }
+
+        &:active {
+            background-color: #054b13;
+            color: #cfe7d3;
+            transition: all .1s ease;
+        }
+    }
+}
+
+.gameTypeSelection {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #16141b;
+    border: .1rem solid #3a3a3a;
+    border-radius: 1.5rem;
+    height: 2.4rem;
+    overflow: hidden;
+    transition: all .2s ease-in-out;
+    margin-left: -.8rem;
+    z-index: 60;
+
+    .gameTypeBtn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #7171b8;
+        font-size: 1.5rem;
+        height: 100%;
+        width: 2.6rem;
+        cursor: pointer;
+        transition: all .2s ease;
+
+        &:hover {
+            background-color: #7171b8;
+            color: #e0e0e0;
+            transition: all .2s ease;
+        }
+
+        &.selected {
+            background-color: #832926;
+            color: #e0e0e0;
+            transition: all .2s ease;
+        }
+    }
+
+    .gameType3Card {
+        border-left: .1rem solid #313131dc;
+    }
+}

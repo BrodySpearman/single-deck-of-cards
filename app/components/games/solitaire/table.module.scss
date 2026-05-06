@@ -84,6 +84,7 @@
 .waste {
     display: flex;
     flex-direction: row;
+    min-width: 13rem;
 
     &>*+* {
         margin-left: -7rem;
@@ -116,68 +117,4 @@
 
 .tableauEmptyCol {
     border: .1rem solid #af640e;
-}
-
-.startBtnOuter {
-    position: absolute;
-    bottom: 3rem;
-    right: 50%;
-    transform: translateX(50%);
-    display: inline-flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    background-color: #3030307c;
-    border: .1rem solid #313131dc;
-    border-radius: 1.5rem;
-    height: 2.4rem;
-    overflow: hidden;
-    transition: all .2s ease-in-out;
-
-    .selectGameType,
-    .gameSettings {
-        width: 3.5rem;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #7171b8;
-        font-size: 1.3rem;
-        cursor: pointer;
-    }
-
-    .selectGameType {
-        border-right: .1rem solid #313131dc;
-    }
-
-    .startBtn {
-        border-right: .1rem solid #313131dc;
-        background-color: transparent;
-        height: 100%;
-        color: #7171b8;
-        font-size: 1.3rem;
-        padding-left: 1rem;
-        padding-right: 1rem;
-        transition: all .2s ease;
-        cursor: pointer;
-
-        .startBtnSym {
-            padding-left: .5rem;
-            padding-right: .5rem;
-            color: #96201c;
-            font-size: 1.5rem;
-            line-height: 2rem;
-        }
-
-        &:hover {
-            background-color: #2e633b;
-            color: #cfe7d3;
-            transition: all .2s ease;
-
-            .startBtnSym {
-                color: #141414;
-                transition: all .2s ease;
-            }
-        }
-    }
 }

@@ -10,10 +10,12 @@ import { TbCards } from "react-icons/tb";
 import { IoSettingsOutline } from "react-icons/io5";
 
 import useSound from "use-sound";
+import InfoMenu from "../../ui/info-menu/info-menu";
 
 export default function SolitaireTable() {
     const [gameState, setGameState] = useState<SolitaireState | null>(null);
     const [showWinModal, setShowWinModal] = useState(false);
+    const [drawCount, setDrawCount] = useState<1 | 3>(3);
 
     // Sounds // 
     const [playDropSound] = useSound('/audio/cardDrop.mp3', {
@@ -35,10 +37,11 @@ export default function SolitaireTable() {
 
     const handleDealWaste = () => {
         playWasteDealSound();
-        setGameState(dealWaste(gameState!));
+        setGameState(dealWaste(gameState!, drawCount));
     };
 
-    const handleStartGame = () => {
+    const handleStartGame = (count: 1 | 3) => {
+        setDrawCount(count);
         setGameState(initializeGame());
     };
 
@@ -192,7 +195,6 @@ export default function SolitaireTable() {
                 </PlayingCard>
             </div>
         )
-
     }
 
     const renderTableau = () => {
@@ -241,23 +243,10 @@ export default function SolitaireTable() {
                         </div>
                     </div>
                     <div className={styles.tableauContainer}>
-                        {gameState && renderTableau()}
+                        {gameState ? renderTableau() : null}
                     </div>
                 </div>
-                <div className={styles.startBtnOuter}>
-                    <button className={styles.startBtn} onClick={handleStartGame}>
-                        <span className={styles.startBtnSym}>♠</span>
-                        <span className={styles.startBtnText}> PLAY 3 CARD </span>
-                        <span className={styles.startBtnSym}>♠</span>
-                    </button>
-                    <div className={styles.selectGameType}>
-                        <TbCards />
-                    </div>
-                    <div className={styles.gameSettings}>
-                        <IoSettingsOutline />
-                    </div>
-                </div>
-
+                <InfoMenu handleStartGame={handleStartGame} />
             </div>
         </LayoutGroup>
     );

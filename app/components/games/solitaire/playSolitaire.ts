@@ -24,7 +24,7 @@ export function initializeGame(): SolitaireState {
     }
 }
 
-export function dealWaste(currentState: SolitaireState) {
+export function dealWaste(currentState: SolitaireState, drawCount = 3) {
     const stock = currentState.stock;
     const waste = currentState.waste;
 
@@ -39,7 +39,7 @@ export function dealWaste(currentState: SolitaireState) {
     }
 
     const newStock = [...currentState.stock];
-    const dealt = newStock.splice(-3).reverse().map(card => ({ ...card, faceUp: true }));
+    const dealt = newStock.splice(-drawCount).reverse().map(card => ({ ...card, faceUp: true }));
 
     return {
         ...currentState,
