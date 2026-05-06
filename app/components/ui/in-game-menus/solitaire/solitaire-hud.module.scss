@@ -1,0 +1,43 @@
+.solitaireHud {
+    display: inline-flex;
+    flex-direction: row;
+    text-align: center;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: all .2s ease;
+}
+
+.timer {
+    padding: .1rem .5rem;
+    width: 6rem;
+    font-size: 1.1rem;
+    color: #d1d1d1;
+    font-family: var(--font-outfit);
+}
+
+.gameBtn {
+    width: 3.25rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #7171b8;
+    border-left: .1rem solid #3a3a3a;
+}
+
+.undoBtn {
+    color: #a4a4a4;
+    font-size: 1.5rem;
+}
+
+.restartBtn {
+    color: #87bb7a;
+    font-size: 1.5rem;
+}
+
+.abandonGameBtn {
+    font-size: 1.5rem;
+    color: #d66e6e;
+}

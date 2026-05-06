@@ -16,6 +16,7 @@ export default function SolitaireTable() {
     const [gameState, setGameState] = useState<SolitaireState | null>(null);
     const [showWinModal, setShowWinModal] = useState(false);
     const [drawCount, setDrawCount] = useState<1 | 3>(3);
+    const [gameId, setGameId] = useState(0);
 
     // Sounds // 
     const [playDropSound] = useSound('/audio/cardDrop.mp3', {
@@ -43,6 +44,7 @@ export default function SolitaireTable() {
     const handleStartGame = (count: 1 | 3) => {
         setDrawCount(count);
         setGameState(initializeGame());
+        setGameId(prev => prev + 1);
     };
 
     const handleSmartClick = (card: Card, originZoneId: string) => {
@@ -246,7 +248,7 @@ export default function SolitaireTable() {
                         {gameState ? renderTableau() : null}
                     </div>
                 </div>
-                <InfoMenu handleStartGame={handleStartGame} />
+                <InfoMenu handleStartGame={handleStartGame} gameId={gameId} />
             </div>
         </LayoutGroup>
     );
