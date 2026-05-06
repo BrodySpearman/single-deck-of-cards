@@ -47,6 +47,11 @@ export default function SolitaireTable() {
         setGameId(prev => prev + 1);
     };
 
+    const handleAbandonGame = () => {
+        setGameState(null);
+        setGameId(0);
+    }
+
     const handleSmartClick = (card: Card, originZoneId: string) => {
         setGameState(smartClick(gameState!, card, originZoneId));
         playDropSound();
@@ -248,7 +253,11 @@ export default function SolitaireTable() {
                         {gameState ? renderTableau() : null}
                     </div>
                 </div>
-                <InfoMenu handleStartGame={handleStartGame} gameId={gameId} />
+                <InfoMenu
+                    handleStartGame={handleStartGame}
+                    handleAbandonGame={handleAbandonGame}
+                    gameId={gameId}
+                />
             </div>
         </LayoutGroup>
     );

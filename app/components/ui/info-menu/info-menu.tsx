@@ -9,10 +9,11 @@ import { AnimatePresence, motion } from "framer-motion";
 
 interface InfoMenuProps {
     handleStartGame: (drawCount: 1 | 3) => void;
+    handleAbandonGame: () => void;
     gameId: number;
 }
 
-export default function InfoMenu({ handleStartGame, gameId }: InfoMenuProps) {
+export default function InfoMenu({ handleStartGame, handleAbandonGame, gameId }: InfoMenuProps) {
     const [selectedGameType, setSelectedGameType] = useState<'1' | '3'>('3');
 
     const selectGameType = (gameType: '1' | '3') => {
@@ -27,7 +28,8 @@ export default function InfoMenu({ handleStartGame, gameId }: InfoMenuProps) {
                         <motion.div
                             key="baseMenu"
                             className={styles.baseMenu}
-                            initial={{ opacity: 1, x: 0 }}
+                            initial={{ opacity: 0, x: -50 }}
+                            animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -50 }}
                             transition={{ duration: .15 }}
                         >
@@ -73,9 +75,14 @@ export default function InfoMenu({ handleStartGame, gameId }: InfoMenuProps) {
                             className={styles.solitaireHudWrapper}
                             initial={{ opacity: 0, x: 50 }}
                             animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: 50 }}
                             transition={{ duration: .15 }}
                         >
-                            <SolitaireHud gameId={gameId} />
+                            <SolitaireHud
+                                gameId={gameId}
+                                onAbandonGame={handleAbandonGame}
+                                onRestartGame={() => handleStartGame(Number(selectedGameType) as 1 | 3)}
+                            />
                         </motion.div>
                     }
                 </AnimatePresence>

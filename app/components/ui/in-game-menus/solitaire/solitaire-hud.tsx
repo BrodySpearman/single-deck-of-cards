@@ -8,9 +8,11 @@ import { MdOutlineExitToApp } from "react-icons/md";
 
 interface SolitaireHudProps {
     gameId: number;
+    onRestartGame: () => void;
+    onAbandonGame: () => void;
 }
 
-export default function SolitaireHud({ gameId }: SolitaireHudProps) {
+export default function SolitaireHud({ gameId, onAbandonGame, onRestartGame }: SolitaireHudProps) {
     const [time, setTime] = useState(0);
 
     useEffect(() => {
@@ -46,11 +48,17 @@ export default function SolitaireHud({ gameId }: SolitaireHudProps) {
                 <CgUndo />
             </button>
 
-            <button className={`${genStyles.navBtn} ${styles.restartBtn} ${styles.gameBtn}`}>
+            <button
+                className={`${genStyles.navBtn} ${styles.restartBtn} ${styles.gameBtn}`}
+                onClick={onRestartGame}
+            >
                 <TbCircleLetterRFilled />
             </button>
 
-            <button className={`${genStyles.navBtn} ${styles.abandonGameBtn} ${styles.gameBtn}`}>
+            <button
+                className={`${genStyles.navBtn} ${styles.abandonGameBtn} ${styles.gameBtn}`}
+                onClick={() => onAbandonGame()}
+            >
                 <MdOutlineExitToApp />
             </button>
         </div>
