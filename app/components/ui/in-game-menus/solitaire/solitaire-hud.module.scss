@@ -10,15 +10,15 @@
 }
 
 .timer {
-    padding: .1rem .5rem;
-    width: 6rem;
+    width: 6.5rem;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: #d1d1d1;
     font-family: var(--font-outfit);
+    font-weight: 300;
     background-color: #00000059;
 }
 
@@ -34,16 +34,30 @@
 }
 
 .undoBtn {
-    color: #a4a4a4;
+    color: #64a75e;
     font-size: 1.5rem;
+
+    &:hover {
+        background-color: #64a75e !important;
+        color: #cecece !important;
+    }
 }
 
 .restartBtn {
-    color: #87bb7a;
+    color: #7171b8;
     font-size: 1.5rem;
+
+    &:hover {
+        color: #cecece !important;
+    }
 }
 
 .abandonGameBtn {
     font-size: 1.5rem;
     color: #d66e6e;
+
+    &:hover {
+        background-color: #d66e6e !important;
+        color: #cecece !important;
+    }
 }

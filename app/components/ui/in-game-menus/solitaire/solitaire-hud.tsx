@@ -6,6 +6,8 @@ import { CgUndo } from "react-icons/cg";
 import { TbCircleLetterRFilled } from "react-icons/tb";
 import { MdOutlineExitToApp } from "react-icons/md";
 
+import { Tooltip } from "react-tooltip";
+
 interface SolitaireHudProps {
     gameId: number;
     onRestartGame: () => void;
@@ -44,21 +46,47 @@ export default function SolitaireHud({ gameId, onAbandonGame, onRestartGame }: S
                 <span>{formatTime(time)}</span>
             </div>
 
-            <button className={`${genStyles.navBtn} ${styles.undoBtn} ${styles.gameBtn}`}>
+            <button
+                className={`${genStyles.navBtn} ${styles.undoBtn} ${styles.gameBtn}`}
+                data-tooltip-id="solitaire-hud-undo"
+                data-tooltip-content="Undo"
+                data-tooltip-float={true}
+            >
+                <Tooltip
+                    id="solitaire-hud-undo"
+                    place="top"
+                    className={genStyles.tooltip}
+                />
                 <CgUndo />
             </button>
 
             <button
                 className={`${genStyles.navBtn} ${styles.restartBtn} ${styles.gameBtn}`}
+                data-tooltip-id="solitaire-hud-restart"
+                data-tooltip-content="Restart"
+                data-tooltip-float={true}
                 onClick={onRestartGame}
             >
+                <Tooltip
+                    id="solitaire-hud-restart"
+                    place="top"
+                    className={genStyles.tooltip}
+                />
                 <TbCircleLetterRFilled />
             </button>
 
             <button
                 className={`${genStyles.navBtn} ${styles.abandonGameBtn} ${styles.gameBtn}`}
+                data-tooltip-id="solitaire-hud-abandon"
+                data-tooltip-content="Abandon game"
+                data-tooltip-float={true}
                 onClick={() => onAbandonGame()}
             >
+                <Tooltip
+                    id="solitaire-hud-abandon"
+                    place="top"
+                    className={genStyles.tooltip}
+                />
                 <MdOutlineExitToApp />
             </button>
         </div>
