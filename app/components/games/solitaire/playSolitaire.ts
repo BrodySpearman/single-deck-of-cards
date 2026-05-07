@@ -211,11 +211,10 @@ export function validWinConditionCheck(foundations: Card[][]): boolean {
     return foundations.every(f => f.length > 0 && f[f.length - 1].rank === 'K');
 }
 
-/// Small general mechanics ///
-
 function flipTopCard(column: Card[]): void {
     if (column.length > 0) {
         const topIndex = column.length - 1;
         column[topIndex] = { ...column[topIndex], faceUp: true };
     }
 }
+

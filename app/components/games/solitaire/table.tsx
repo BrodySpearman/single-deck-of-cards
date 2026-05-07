@@ -31,30 +31,45 @@ export default function SolitaireTable() {
 
     // User interactions //
     const performCardDrop = (card: Card, originZoneId: string, targetZoneId: string) => {
+        saveSnapshot();
         const newGameState = handleCardDrop(gameState!, card, originZoneId, targetZoneId);
         setGameState(newGameState);
         playDropSound();
     };
 
     const handleDealWaste = () => {
+        saveSnapshot();
         playWasteDealSound();
         setGameState(dealWaste(gameState!, drawCount));
     };
 
     const handleStartGame = (count: 1 | 3) => {
+        setHistory([]);
         setDrawCount(count);
         setGameState(initializeGame());
         setGameId(prev => prev + 1);
     };
 
     const handleAbandonGame = () => {
+        setHistory([]);
         setGameState(null);
         setGameId(0);
     }
 
     const handleSmartClick = (card: Card, originZoneId: string) => {
+        saveSnapshot();
         setGameState(smartClick(gameState!, card, originZoneId));
         playDropSound();
+    }
+
+    const handleUndo = () => {
+        if (history.length === 0) return;
+
+        const newHistory = [...history];
+        const previousState = newHistory.pop();
+
+        setGameState(previousState!);
+        setHistory(newHistory);
     }
 
     // Special gameplay animations //
@@ -80,6 +95,14 @@ export default function SolitaireTable() {
             }
         }
     }, [gameState, playDropSound]);
+
+    // Table history snapshots (for undo) //
+    const [history, setHistory] = useState<SolitaireState[]>([]);
+
+    const saveSnapshot = () => {
+        const snapshot = structuredClone(gameState);
+        setHistory(prev => [...prev, snapshot!]);
+    }
 
     // Table renderers //
     const renderFoundation = () => {
@@ -256,6 +279,8 @@ export default function SolitaireTable() {
                 <InfoMenu
                     handleStartGame={handleStartGame}
                     handleAbandonGame={handleAbandonGame}
+                    handleUndo={handleUndo}
+                    canUndo={history.length > 0}
                     gameId={gameId}
                 />
             </div>

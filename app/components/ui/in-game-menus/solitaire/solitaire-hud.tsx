@@ -12,9 +12,11 @@ interface SolitaireHudProps {
     gameId: number;
     onRestartGame: () => void;
     onAbandonGame: () => void;
+    onUndo: () => void;
+    canUndo: boolean;
 }
 
-export default function SolitaireHud({ gameId, onAbandonGame, onRestartGame }: SolitaireHudProps) {
+export default function SolitaireHud({ gameId, onAbandonGame, onRestartGame, onUndo, canUndo }: SolitaireHudProps) {
     const [time, setTime] = useState(0);
 
     useEffect(() => {
@@ -51,6 +53,8 @@ export default function SolitaireHud({ gameId, onAbandonGame, onRestartGame }: S
                 data-tooltip-id="solitaire-hud-undo"
                 data-tooltip-content="Undo"
                 data-tooltip-float={true}
+                onClick={onUndo}
+                disabled={!canUndo}
             >
                 <Tooltip
                     id="solitaire-hud-undo"

@@ -10,10 +10,12 @@ import { Tooltip } from "react-tooltip";
 interface InfoMenuProps {
     handleStartGame: (drawCount: 1 | 3) => void;
     handleAbandonGame: () => void;
+    handleUndo: () => void;
+    canUndo: boolean;
     gameId: number;
 }
 
-export default function InfoMenu({ handleStartGame, handleAbandonGame, gameId }: InfoMenuProps) {
+export default function InfoMenu({ handleStartGame, handleAbandonGame, handleUndo, canUndo, gameId }: InfoMenuProps) {
     const [selectedGameType, setSelectedGameType] = useState<'1' | '3'>('3');
 
     const selectGameType = (gameType: '1' | '3') => {
@@ -131,6 +133,8 @@ export default function InfoMenu({ handleStartGame, handleAbandonGame, gameId }:
                                 gameId={gameId}
                                 onAbandonGame={handleAbandonGame}
                                 onRestartGame={() => handleStartGame(Number(selectedGameType) as 1 | 3)}
+                                onUndo={handleUndo}
+                                canUndo={canUndo}
                             />
                         </motion.div>
                     }
