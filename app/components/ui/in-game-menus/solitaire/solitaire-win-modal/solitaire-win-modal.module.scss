@@ -1,0 +1,85 @@
+.solitaireWinModalWrapper {
+    z-index: 10000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #1f1f1f30;
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.solitaireWinMenuContainer {
+    position: relative;
+    width: 40rem;
+    height: fit-content;
+    padding: 2rem 0 1.5rem 0;
+    background-color: #16141b;
+    border: .3rem solid #414141af;
+    border-radius: 12px;
+    box-shadow: 0 0 10px #00000080;
+    text-align: center;
+    overflow: hidden;
+}
+
+.menuHeader {
+    color: #59aa60;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: -.3rem;
+}
+
+.menuText {
+    font-family: var(--font-outfit);
+    color: #cacaca;
+}
+
+.thankYouText {
+    font-size: 1.1rem;
+    color: #afae55;
+}
+
+.disclaimerText {
+    color: #afae55;
+    margin-top: -.3rem;
+    margin-bottom: 2rem;
+}
+
+.menuBtnContainer {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 85%;
+    margin-top: 2rem;
+}
+
+.menuBtn {
+    width: 47.5%;
+    min-height: 3.2rem;
+    background-color: transparent;
+    border: .13rem solid #3a3a3a;
+    border-radius: 12px;
+    font-family: var(--font-outfit);
+    font-size: 1.1rem;
+    color: #cacaca;
+    transition: all .15s ease;
+}
+
+.newGameBtn {
+    &:hover {
+        background-color: #00681c;
+        border-color: #00681c;
+        transition: all .15s ease;
+    }
+}
+
+.closeBtn {
+    &:hover {
+        background-color: #832926;
+        border-color: #832926;
+        transition: all .15s ease;
+    }
+}

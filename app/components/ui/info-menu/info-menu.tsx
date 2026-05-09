@@ -3,7 +3,7 @@ import { TbCardsFilled, TbPlayCardKFilled } from "react-icons/tb";
 import { IoIosMore } from "react-icons/io";
 import { IoSettingsOutline } from "react-icons/io5";
 import { useState } from "react";
-import SolitaireHud from "../in-game-menus/solitaire/solitaire-hud";
+import SolitaireHud from "../in-game-menus/solitaire/solitaire-hud/solitaire-hud";
 import { AnimatePresence, motion } from "framer-motion";
 import { Tooltip } from "react-tooltip";
 
@@ -13,9 +13,10 @@ interface InfoMenuProps {
     handleUndo: () => void;
     canUndo: boolean;
     gameId: number;
+    gameWinTimerStop: boolean;
 }
 
-export default function InfoMenu({ handleStartGame, handleAbandonGame, handleUndo, canUndo, gameId }: InfoMenuProps) {
+export default function InfoMenu({ handleStartGame, handleAbandonGame, handleUndo, canUndo, gameId, gameWinTimerStop }: InfoMenuProps) {
     const [selectedGameType, setSelectedGameType] = useState<'1' | '3'>('3');
 
     const selectGameType = (gameType: '1' | '3') => {
@@ -130,11 +131,12 @@ export default function InfoMenu({ handleStartGame, handleAbandonGame, handleUnd
                             transition={{ duration: .15 }}
                         >
                             <SolitaireHud
-                                gameId={gameId}
                                 onAbandonGame={handleAbandonGame}
                                 onRestartGame={() => handleStartGame(Number(selectedGameType) as 1 | 3)}
                                 onUndo={handleUndo}
                                 canUndo={canUndo}
+                                gameId={gameId}
+                                gameWinTimerStop={gameWinTimerStop}
                             />
                         </motion.div>
                     }

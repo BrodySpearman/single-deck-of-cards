@@ -1,22 +1,24 @@
 'use client';
 import styles from "./table.module.scss";
 import PlayingCard from "../../card-deck/playing-card/playing-card";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { initializeGame, dealWaste, handleCardDrop, smartClick, finishWin, validWinConditionCheck } from "./playSolitaire";
 import type { SolitaireState } from "@/app/types/solitaire";
 import type { Card } from "@/app/types/deck-types";
 import { LayoutGroup, motion } from "framer-motion";
 import { TbCards } from "react-icons/tb";
 import { IoSettingsOutline } from "react-icons/io5";
+import SolitaireWinModal from "../../ui/in-game-menus/solitaire/solitaire-win-modal/solitaire-win-modal";
 
 import useSound from "use-sound";
 import InfoMenu from "../../ui/info-menu/info-menu";
 
 export default function SolitaireTable() {
     const [gameState, setGameState] = useState<SolitaireState | null>(null);
-    const [showWinModal, setShowWinModal] = useState(false);
+    const [gameWinTimerStop, setGameWinTimerStop] = useState(false);
     const [drawCount, setDrawCount] = useState<1 | 3>(3);
     const [gameId, setGameId] = useState(0);
+    const [winModalOpen, setWinModalOpen] = useState(false);
 
     // Sounds // 
     const [playDropSound] = useSound('/audio/cardDrop.mp3', {
@@ -48,12 +50,14 @@ export default function SolitaireTable() {
         setDrawCount(count);
         setGameState(initializeGame());
         setGameId(prev => prev + 1);
+        startTimeRef.current = Date.now();
     };
 
     const handleAbandonGame = () => {
         setHistory([]);
         setGameState(null);
         setGameId(0);
+        startTimeRef.current = 0;
     }
 
     const handleSmartClick = (card: Card, originZoneId: string) => {
@@ -72,7 +76,10 @@ export default function SolitaireTable() {
         setHistory(newHistory);
     }
 
-    // Special gameplay animations //
+    // Game timer //
+    const startTimeRef = useRef<number>(0);
+
+    // Game win loop //
     useEffect(() => {
         if (!gameState) return;
 
@@ -82,16 +89,19 @@ export default function SolitaireTable() {
         const allTableauCardsFaceUp = gameState.tableau.every(
             column => column.length === 0 || column[0].faceUp
         );
-
         const canAutoFinish = isStockEmpty && isWasteEmpty && allTableauCardsFaceUp;
+
         if (canAutoFinish) {
             const isGameWon = validWinConditionCheck(gameState.foundations);
             if (!isGameWon) {
+                setGameWinTimerStop(true);
                 const timer = setTimeout(() => {
                     setGameState(finishWin(gameState!));
                 }, 125);
 
                 return () => clearTimeout(timer);
+            } else {
+                setWinModalOpen(true);
             }
         }
     }, [gameState, playDropSound]);
@@ -276,12 +286,18 @@ export default function SolitaireTable() {
                         {gameState ? renderTableau() : null}
                     </div>
                 </div>
+
+                {winModalOpen && (
+                    <SolitaireWinModal />
+                )}
+
                 <InfoMenu
                     handleStartGame={handleStartGame}
                     handleAbandonGame={handleAbandonGame}
                     handleUndo={handleUndo}
                     canUndo={history.length > 0}
                     gameId={gameId}
+                    gameWinTimerStop={gameWinTimerStop}
                 />
             </div>
         </LayoutGroup>

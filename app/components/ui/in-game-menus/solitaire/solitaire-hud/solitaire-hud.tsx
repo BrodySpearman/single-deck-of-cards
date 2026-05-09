@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
+
 import styles from "./solitaire-hud.module.scss";
-import genStyles from "../../info-menu/info-menu.module.scss";
+import genStyles from "../../../info-menu/info-menu.module.scss";
 
 import { CgUndo } from "react-icons/cg";
 import { TbCircleLetterRFilled } from "react-icons/tb";
@@ -9,14 +10,16 @@ import { MdOutlineExitToApp } from "react-icons/md";
 import { Tooltip } from "react-tooltip";
 
 interface SolitaireHudProps {
-    gameId: number;
     onRestartGame: () => void;
     onAbandonGame: () => void;
     onUndo: () => void;
     canUndo: boolean;
+    gameId: number;
+    gameWinTimerStop: boolean;
 }
 
-export default function SolitaireHud({ gameId, onAbandonGame, onRestartGame, onUndo, canUndo }: SolitaireHudProps) {
+export default function SolitaireHud({ onAbandonGame, onRestartGame, onUndo, canUndo, gameId, gameWinTimerStop }: SolitaireHudProps) {
+    const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const [time, setTime] = useState(0);
 
     useEffect(() => {
@@ -25,12 +28,21 @@ export default function SolitaireHud({ gameId, onAbandonGame, onRestartGame, onU
         const startTime = Date.now();
         setTime(0);
 
-        const timer = setInterval(() => {
+        timerRef.current = setInterval(() => {
             setTime(Math.floor((Date.now() - startTime) / 1000));
         }, 1000)
 
-        return () => clearInterval(timer);
-    }, [gameId])
+        return () => {
+            if (timerRef.current) clearInterval(timerRef.current);
+        };
+    }, [gameId]);
+
+    useEffect(() => {
+        if (gameWinTimerStop && timerRef.current) {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
+        };
+    }, [gameWinTimerStop]);
 
     const formatTime = (totalSeconds: number): string => {
         const h = Math.floor(totalSeconds / 3600);
