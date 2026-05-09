@@ -9,6 +9,7 @@ import { LayoutGroup, motion } from "framer-motion";
 import { TbCards } from "react-icons/tb";
 import { IoSettingsOutline } from "react-icons/io5";
 import SolitaireWinModal from "../../ui/in-game-menus/solitaire/solitaire-win-modal/solitaire-win-modal";
+import DebugMenu from "../../ui/in-game-menus/solitaire/debug-menu/debug-menu";
 
 import useSound from "use-sound";
 import InfoMenu from "../../ui/info-menu/info-menu";
@@ -19,6 +20,9 @@ export default function SolitaireTable() {
     const [drawCount, setDrawCount] = useState<1 | 3>(3);
     const [gameId, setGameId] = useState(0);
     const [winModalOpen, setWinModalOpen] = useState(false);
+
+    // Debugging //
+    const DEBUGGING = true;
 
     // Sounds // 
     const [playDropSound] = useSound('/audio/cardDrop.mp3', {
@@ -78,6 +82,7 @@ export default function SolitaireTable() {
 
     // Game timer //
     const startTimeRef = useRef<number>(0);
+    const [winTime, setWinTime] = useState<number | null>(null);
 
     // Game win loop //
     useEffect(() => {
@@ -95,6 +100,8 @@ export default function SolitaireTable() {
             const isGameWon = validWinConditionCheck(gameState.foundations);
             if (!isGameWon) {
                 setGameWinTimerStop(true);
+                setWinTime(Date.now() - startTimeRef.current);
+
                 const timer = setTimeout(() => {
                     setGameState(finishWin(gameState!));
                 }, 125);
@@ -253,6 +260,15 @@ export default function SolitaireTable() {
         )
     }
 
+    const renderDebugMenu = () => {
+        const simWin = () => {
+            setWinModalOpen(true);
+        }
+        return (
+            <DebugMenu onSimulateWinClick={simWin} />
+        );
+    }
+
     return (
         <LayoutGroup>
             <div className={styles.solitaireTableContainer}>
@@ -288,8 +304,10 @@ export default function SolitaireTable() {
                 </div>
 
                 {winModalOpen && (
-                    <SolitaireWinModal />
+                    <SolitaireWinModal winTime={winTime} />
                 )}
+
+                {gameState && DEBUGGING && renderDebugMenu()}
 
                 <InfoMenu
                     handleStartGame={handleStartGame}

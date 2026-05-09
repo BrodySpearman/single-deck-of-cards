@@ -26,10 +26,12 @@
 }
 
 .menuHeader {
-    color: #59aa60;
-    font-size: 2rem;
+    color: #c21322;
+    font-size: 3.5rem;
     font-weight: bold;
     margin-bottom: -.3rem;
+    font-family: var(--font-outfit);
+    font-weight: 600;
 }
 
 .menuText {
@@ -46,6 +48,13 @@
     color: #afae55;
     margin-top: -.3rem;
     margin-bottom: 2rem;
+}
+
+.gameTimeText {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #35c241;
 }
 
 .menuBtnContainer {
