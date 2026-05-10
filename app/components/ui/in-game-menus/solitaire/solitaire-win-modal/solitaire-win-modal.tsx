@@ -1,10 +1,14 @@
 import styles from "./solitaire-win-modal.module.scss";
+import { CgUndo } from "react-icons/cg";
+import { RiCloseCircleLine } from "react-icons/ri";
 
 interface SolitaireWinModalProps {
     winTime: number | null;
+    onNewGame: () => void;
+    onClose: () => void;
 }
 
-export default function SolitaireWinModal({ winTime }: SolitaireWinModalProps) {
+export default function SolitaireWinModal({ winTime, onNewGame, onClose }: SolitaireWinModalProps) {
     const winTimeSeconds = winTime ? Math.floor(winTime / 1000) : null;
 
     const formatTime = (totalSeconds: number | null): string => {
@@ -30,15 +34,17 @@ export default function SolitaireWinModal({ winTime }: SolitaireWinModalProps) {
                 <div className={styles.menuBtnContainer}>
                     <button
                         className={`${styles.menuBtn} ${styles.menuText} ${styles.newGameBtn}`}
-                        onClick={() => { }}
+                        onClick={onNewGame}
                     >
-                        Restart
+                        <span>Restart</span>
+                        <CgUndo size={22} />
                     </button>
                     <button
                         className={`${styles.menuBtn} ${styles.menuText} ${styles.closeBtn}`}
-                        onClick={() => { }}
+                        onClick={onClose}
                     >
-                        Close
+                        <span>Close</span>
+                        <RiCloseCircleLine size={22} />
                     </button>
                 </div>
             </div>

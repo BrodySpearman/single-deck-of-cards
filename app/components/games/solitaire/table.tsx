@@ -75,7 +75,6 @@ export default function SolitaireTable() {
 
         const newHistory = [...history];
         const previousState = newHistory.pop();
-
         setGameState(previousState!);
         setHistory(newHistory);
     }
@@ -304,7 +303,14 @@ export default function SolitaireTable() {
                 </div>
 
                 {winModalOpen && (
-                    <SolitaireWinModal winTime={winTime} />
+                    <SolitaireWinModal
+                        winTime={winTime}
+                        onNewGame={(drawCount) => {
+                            handleStartGame(drawCount);
+                            setWinModalOpen(false);
+                        }}
+                        onClose={() => setWinModalOpen(false)}
+                    />
                 )}
 
                 {gameState && DEBUGGING && renderDebugMenu()}

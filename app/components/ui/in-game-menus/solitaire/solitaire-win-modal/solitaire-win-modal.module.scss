@@ -66,6 +66,10 @@
 }
 
 .menuBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .3rem;
     width: 47.5%;
     min-height: 3.2rem;
     background-color: transparent;
@@ -80,15 +84,15 @@
 .newGameBtn {
     &:hover {
         background-color: #00681c;
-        border-color: #00681c;
+        border-color: #019629;
         transition: all .15s ease;
     }
 }
 
 .closeBtn {
     &:hover {
-        background-color: #832926;
-        border-color: #832926;
+        background-color: #701f1c;
+        border-color: #b4403b;
         transition: all .15s ease;
     }
 }
