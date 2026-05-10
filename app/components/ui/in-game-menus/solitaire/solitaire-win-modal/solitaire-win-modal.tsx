@@ -1,6 +1,8 @@
 import styles from "./solitaire-win-modal.module.scss";
 import { CgUndo } from "react-icons/cg";
 import { RiCloseCircleLine } from "react-icons/ri";
+import Image from "next/image";
+import smile from "@/public/smile.png"
 
 interface SolitaireWinModalProps {
     winTime: number | null;
@@ -26,6 +28,16 @@ export default function SolitaireWinModal({ winTime, onNewGame, onClose }: Solit
         <div className={styles.solitaireWinModalWrapper}>
             <div className={`${styles.solitaireWinMenuContainer} no-highlight`}>
                 <h1 className={styles.menuHeader}>Nice Job!</h1>
+
+                <div className={styles.imageContainer}>
+                    <Image
+                        src={smile}
+                        alt="Smile"
+                        width={150}
+                        height={150}
+                    />
+                </div>
+
                 <p className={`${styles.thankYouText} ${styles.menuText}`}>Thank you as always for playing.</p>
                 <p className={`${styles.disclaimerText} ${styles.menuText}`}>This is still a WIP, with more game statistics and analysis coming in the future.</p>
 

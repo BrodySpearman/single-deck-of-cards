@@ -22,16 +22,26 @@
     border-radius: 12px;
     box-shadow: 0 0 10px #00000080;
     text-align: center;
+    justify-content: center;
+    align-items: center;
     overflow: hidden;
 }
 
 .menuHeader {
-    color: #c21322;
+    color: #625da8;
     font-size: 3.5rem;
     font-weight: bold;
     margin-bottom: -.3rem;
     font-family: var(--font-outfit);
     font-weight: 600;
+}
+
+.imageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: .5rem;
+    margin-top: .5rem;
 }
 
 .menuText {
