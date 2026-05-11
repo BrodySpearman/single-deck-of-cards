@@ -9,11 +9,6 @@
     transition: all .2s ease;
 }
 
-.timer {
-    width: 6.5rem;
-    font-size: 1rem;
-}
-
 .hudDisplayVal {
     height: 100%;
     display: flex;
@@ -25,9 +20,25 @@
     background-color: #00000059;
 }
 
+.timer {
+    width: 6.5rem;
+    font-size: 1rem;
+}
+
+.moves,
 .score {
+    flex-direction: column;
+    font-size: 1rem;
     border-left: .1rem solid #3a3a3a;
     width: 6rem;
+    line-height: .9rem;
+    padding-bottom: .31rem;
+}
+
+.statLabel {
+    font-size: .8rem;
+    color: #7171b8;
+    font-weight: 600;
 }
 
 .gameBtn {

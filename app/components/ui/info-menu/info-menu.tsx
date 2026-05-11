@@ -14,9 +14,11 @@ interface InfoMenuProps {
     canUndo: boolean;
     gameId: number;
     gameWinTimerStop: boolean;
+    score: number;
+    moves: number;
 }
 
-export default function InfoMenu({ handleStartGame, handleAbandonGame, handleUndo, canUndo, gameId, gameWinTimerStop }: InfoMenuProps) {
+export default function InfoMenu({ handleStartGame, handleAbandonGame, handleUndo, canUndo, gameId, gameWinTimerStop, score, moves }: InfoMenuProps) {
     const [selectedGameType, setSelectedGameType] = useState<'1' | '3'>('3');
 
     const selectGameType = (gameType: '1' | '3') => {
@@ -137,6 +139,8 @@ export default function InfoMenu({ handleStartGame, handleAbandonGame, handleUnd
                                 canUndo={canUndo}
                                 gameId={gameId}
                                 gameWinTimerStop={gameWinTimerStop}
+                                score={score}
+                                moves={moves}
                             />
                         </motion.div>
                     }

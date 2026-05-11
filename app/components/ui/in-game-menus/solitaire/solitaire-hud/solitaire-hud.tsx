@@ -16,9 +16,11 @@ interface SolitaireHudProps {
     canUndo: boolean;
     gameId: number;
     gameWinTimerStop: boolean;
+    score: number;
+    moves: number;
 }
 
-export default function SolitaireHud({ onAbandonGame, onRestartGame, onUndo, canUndo, gameId, gameWinTimerStop }: SolitaireHudProps) {
+export default function SolitaireHud({ onAbandonGame, onRestartGame, onUndo, canUndo, gameId, gameWinTimerStop, score, moves }: SolitaireHudProps) {
     const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const [time, setTime] = useState(0);
 
@@ -60,7 +62,12 @@ export default function SolitaireHud({ onAbandonGame, onRestartGame, onUndo, can
                 <span>{formatTime(time)}</span>
             </div>
             <div className={`${styles.hudDisplayVal} ${styles.score} no-highlight`}>
-                <span>00000</span>
+                <span className={`${styles.statLabel}`}>score</span>
+                <span className={`${styles.scoreCount}`}>{score}</span>
+            </div>
+            <div className={`${styles.hudDisplayVal} ${styles.moves} no-highlight`}>
+                <span className={`${styles.statLabel}`}>moves</span>
+                <span className={`${styles.moveCount}`}>{moves}</span>
             </div>
 
             <button

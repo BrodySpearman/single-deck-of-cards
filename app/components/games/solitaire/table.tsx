@@ -6,8 +6,6 @@ import { initializeGame, dealWaste, handleCardDrop, smartClick, finishWin, valid
 import type { SolitaireState } from "@/app/types/solitaire";
 import type { Card } from "@/app/types/deck-types";
 import { LayoutGroup, motion } from "framer-motion";
-import { TbCards } from "react-icons/tb";
-import { IoSettingsOutline } from "react-icons/io5";
 import SolitaireWinModal from "../../ui/in-game-menus/solitaire/solitaire-win-modal/solitaire-win-modal";
 import DebugMenu from "../../ui/in-game-menus/solitaire/debug-menu/debug-menu";
 
@@ -326,6 +324,8 @@ export default function SolitaireTable() {
                     canUndo={history.length > 0}
                     gameId={gameId}
                     gameWinTimerStop={gameWinTimerStop}
+                    score={gameState?.score || 0}
+                    moves={gameState?.moves || 0}
                 />
             </div>
         </LayoutGroup>

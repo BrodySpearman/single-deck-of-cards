@@ -21,6 +21,8 @@ export function initializeGame(): SolitaireState {
         waste: [],
         foundations: [[], [], [], []],
         tableau: tableau,
+        score: 0,
+        moves: 0,
     }
 }
 
@@ -63,6 +65,7 @@ export function handleCardDrop(
 
     let cardsToMove: Card[] = [card];
     let isValidMove = false;
+    let wasCardFlipped = false;
 
     // target validation //
     if (targetZoneId.startsWith('tableau-')) {
@@ -100,7 +103,7 @@ export function handleCardDrop(
         const originColumnIndex = parseInt(originZoneId.split('-')[1]);
         const dragIndex = nextTableau[originColumnIndex].findIndex(c => c.id === card.id);
         cardsToMove = nextTableau[originColumnIndex].splice(dragIndex);
-        flipTopCard(nextTableau[originColumnIndex]);
+        wasCardFlipped = flipTopCard(nextTableau[originColumnIndex]);
 
     } else if (originZoneId.startsWith('foundation-')) {
         const originFoundationIndex = parseInt(originZoneId.split('-')[1]);
@@ -119,11 +122,16 @@ export function handleCardDrop(
         }
     }
 
+    // Add score values
+    const moveScore = calculateMoveScore(originZoneId, targetZoneId, wasCardFlipped);
+
     return {
         ...currentState,
         waste: nextWaste,
         tableau: nextTableau,
         foundations: nextFoundations,
+        score: currentState.score + moveScore,
+        moves: currentState.moves + 1,
     }
 }
 
@@ -210,10 +218,32 @@ export function validWinConditionCheck(foundations: Card[][]): boolean {
     return foundations.every(f => f.length > 0 && f[f.length - 1].rank === 'K');
 }
 
-function flipTopCard(column: Card[]): void {
+function flipTopCard(column: Card[]): boolean {
     if (column.length > 0) {
         const topIndex = column.length - 1;
+        const wasFaceDown = !column[topIndex].faceUp; // Check for scoring reasons
         column[topIndex] = { ...column[topIndex], faceUp: true };
+
+        return wasFaceDown;
     }
+    return false;
+}
+
+function calculateMoveScore(originZoneId: string, targetZoneId: string, wasCardFlipped: boolean) {
+    let points = 0;
+
+    // To foundation
+    if (targetZoneId.startsWith('foundation-')) { points += 100; };
+
+    // From waste to tableau
+    if (targetZoneId.startsWith('tableau-') && originZoneId.startsWith('waste')) { points += 50; };
+
+    // From foundation to tableau
+    if (targetZoneId.startsWith('tableau-') && originZoneId.startsWith('foundation-')) { points -= 150; };
+
+    // Flipping card in tableau
+    if (wasCardFlipped) { points += 50; }
+
+    return points;
 }
 

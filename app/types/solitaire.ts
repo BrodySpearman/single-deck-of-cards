@@ -5,4 +5,6 @@ export type SolitaireState = {
     waste: Card[];
     foundations: Card[][];
     tableau: Card[][];
+    score: number;
+    moves: number;
 }
