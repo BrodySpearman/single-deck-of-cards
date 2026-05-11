@@ -37,8 +37,10 @@ export default function SolitaireTable() {
 
     // User interactions //
     const performCardDrop = (card: Card, originZoneId: string, targetZoneId: string) => {
-        saveSnapshot();
         const newGameState = handleCardDrop(gameState!, card, originZoneId, targetZoneId);
+        if (newGameState === gameState) return; // Ignore invalid drops
+
+        saveSnapshot();
         setGameState(newGameState);
         playDropSound();
     };
@@ -65,8 +67,11 @@ export default function SolitaireTable() {
     }
 
     const handleSmartClick = (card: Card, originZoneId: string) => {
+        const newGameState = smartClick(gameState!, card, originZoneId);
+        if (newGameState === gameState) return; // Ignore invalid smart clicks
+
         saveSnapshot();
-        setGameState(smartClick(gameState!, card, originZoneId));
+        setGameState(newGameState);
         playDropSound();
     }
 

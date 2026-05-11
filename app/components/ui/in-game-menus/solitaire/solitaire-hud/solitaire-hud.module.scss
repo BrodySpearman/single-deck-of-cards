@@ -11,15 +11,23 @@
 
 .timer {
     width: 6.5rem;
+    font-size: 1rem;
+}
+
+.hudDisplayVal {
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1rem;
-    color: #d1d1d1;
     font-family: var(--font-outfit);
+    color: #d1d1d1;
     font-weight: 300;
     background-color: #00000059;
+}
+
+.score {
+    border-left: .1rem solid #3a3a3a;
+    width: 6rem;
 }
 
 .gameBtn {

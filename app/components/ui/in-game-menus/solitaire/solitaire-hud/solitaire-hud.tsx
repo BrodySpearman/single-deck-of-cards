@@ -56,8 +56,11 @@ export default function SolitaireHud({ onAbandonGame, onRestartGame, onUndo, can
 
     return (
         <div className={styles.solitaireHud}>
-            <div className={`${styles.timer} no-highlight`}>
+            <div className={`${styles.hudDisplayVal} ${styles.timer} no-highlight`}>
                 <span>{formatTime(time)}</span>
+            </div>
+            <div className={`${styles.hudDisplayVal} ${styles.score} no-highlight`}>
+                <span>00000</span>
             </div>
 
             <button
