@@ -72,7 +72,6 @@ export default function SolitaireTable() {
 
     const handleUndo = () => {
         if (history.length === 0) return;
-
         const newHistory = [...history];
         const previousState = newHistory.pop();
         setGameState(previousState!);
@@ -305,7 +304,7 @@ export default function SolitaireTable() {
                 {winModalOpen && (
                     <SolitaireWinModal
                         winTime={winTime}
-                        onNewGame={(drawCount) => {
+                        onNewGame={() => {
                             handleStartGame(drawCount);
                             setWinModalOpen(false);
                         }}

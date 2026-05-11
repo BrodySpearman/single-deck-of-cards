@@ -64,7 +64,6 @@ export function handleCardDrop(
     let cardsToMove: Card[] = [card];
     let isValidMove = false;
 
-
     // target validation //
     if (targetZoneId.startsWith('tableau-')) {
         const targetColumnIndex = parseInt(targetZoneId.split('-')[1]);

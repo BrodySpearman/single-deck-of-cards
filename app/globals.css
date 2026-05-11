@@ -12,9 +12,9 @@
   --font-mono: var(--font-geist-mono);
 }
 
-
 body {
-  background: var(--background);
+  background: #47783e;
+  background: radial-gradient(circle, rgb(66, 122, 56) 19%, rgba(45, 82, 25, 1) 100%);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
