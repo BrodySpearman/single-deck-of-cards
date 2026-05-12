@@ -1,7 +1,7 @@
 'use client';
 import styles from "./table.module.scss";
 import PlayingCard from "../../card-deck/playing-card/playing-card";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { initializeGame, dealWaste, handleCardDrop, smartClick, finishWin, validWinConditionCheck } from "./playSolitaire";
 import type { SolitaireState } from "@/app/types/solitaire";
 import type { Card } from "@/app/types/deck-types";
@@ -270,6 +270,22 @@ export default function SolitaireTable() {
         );
     }
 
+    // Game prop groups //
+    const gameActions = {
+        start: handleStartGame,
+        abandon: handleAbandonGame,
+        undo: handleUndo,
+        draw: handleDealWaste,
+    }
+
+    const gameStats = useMemo(() => {
+        return {
+            score: gameState?.score || 0,
+            moves: gameState?.moves || 0,
+            gameId: gameId,
+        }
+    }, [gameState?.score, gameState?.moves, gameId]);
+
     return (
         <LayoutGroup>
             <div className={styles.solitaireTableContainer}>
@@ -318,14 +334,10 @@ export default function SolitaireTable() {
                 {gameState && DEBUGGING && renderDebugMenu()}
 
                 <InfoMenu
-                    handleStartGame={handleStartGame}
-                    handleAbandonGame={handleAbandonGame}
-                    handleUndo={handleUndo}
+                    actions={gameActions}
+                    stats={gameStats}
                     canUndo={history.length > 0}
-                    gameId={gameId}
                     gameWinTimerStop={gameWinTimerStop}
-                    score={gameState?.score || 0}
-                    moves={gameState?.moves || 0}
                 />
             </div>
         </LayoutGroup>

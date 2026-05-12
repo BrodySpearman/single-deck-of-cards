@@ -8,17 +8,22 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Tooltip } from "react-tooltip";
 
 interface InfoMenuProps {
-    handleStartGame: (drawCount: 1 | 3) => void;
-    handleAbandonGame: () => void;
-    handleUndo: () => void;
     canUndo: boolean;
-    gameId: number;
     gameWinTimerStop: boolean;
-    score: number;
-    moves: number;
+    actions: {
+        start: (drawCount: 1 | 3) => void;
+        abandon: () => void;
+        undo: () => void;
+        draw: () => void;
+    }
+    stats: {
+        score: number;
+        moves: number;
+        gameId: number;
+    }
 }
 
-export default function InfoMenu({ handleStartGame, handleAbandonGame, handleUndo, canUndo, gameId, gameWinTimerStop, score, moves }: InfoMenuProps) {
+export default function InfoMenu({ actions, stats, canUndo, gameWinTimerStop }: InfoMenuProps) {
     const [selectedGameType, setSelectedGameType] = useState<'1' | '3'>('3');
 
     const selectGameType = (gameType: '1' | '3') => {
@@ -29,7 +34,7 @@ export default function InfoMenu({ handleStartGame, handleAbandonGame, handleUnd
         <div className={styles.menuShell}>
             <div className={styles.infoMenuContainer}>
                 <AnimatePresence mode="wait">
-                    {gameId === 0 ?
+                    {stats.gameId === 0 ?
                         <motion.div
                             key="baseMenu"
                             className={styles.baseMenu}
@@ -40,7 +45,7 @@ export default function InfoMenu({ handleStartGame, handleAbandonGame, handleUnd
                         >
                             <button
                                 className={styles.startBtn}
-                                onClick={() => handleStartGame(Number(selectedGameType) as 1 | 3)}
+                                onClick={() => actions.start(Number(selectedGameType) as 1 | 3)}
                                 data-tooltip-id="info-menu-start-game"
                                 data-tooltip-content={`Play ${selectedGameType} card solitaire.`}
                                 data-tooltip-float={true}
@@ -133,14 +138,11 @@ export default function InfoMenu({ handleStartGame, handleAbandonGame, handleUnd
                             transition={{ duration: .15 }}
                         >
                             <SolitaireHud
-                                onAbandonGame={handleAbandonGame}
-                                onRestartGame={() => handleStartGame(Number(selectedGameType) as 1 | 3)}
-                                onUndo={handleUndo}
+                                actions={actions}
+                                stats={stats}
                                 canUndo={canUndo}
-                                gameId={gameId}
                                 gameWinTimerStop={gameWinTimerStop}
-                                score={score}
-                                moves={moves}
+                                selectedGameType={selectedGameType}
                             />
                         </motion.div>
                     }

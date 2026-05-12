@@ -10,22 +10,28 @@ import { MdOutlineExitToApp } from "react-icons/md";
 import { Tooltip } from "react-tooltip";
 
 interface SolitaireHudProps {
-    onRestartGame: () => void;
-    onAbandonGame: () => void;
-    onUndo: () => void;
+    actions: {
+        start: (count: 1 | 3) => void;
+        abandon: () => void;
+        undo: () => void;
+        draw: () => void;
+    }
+    stats: {
+        score: number;
+        moves: number;
+        gameId: number;
+    }
     canUndo: boolean;
-    gameId: number;
     gameWinTimerStop: boolean;
-    score: number;
-    moves: number;
+    selectedGameType: '1' | '3';
 }
 
-export default function SolitaireHud({ onAbandonGame, onRestartGame, onUndo, canUndo, gameId, gameWinTimerStop, score, moves }: SolitaireHudProps) {
+export default function SolitaireHud({ actions, stats, canUndo, gameWinTimerStop, selectedGameType }: SolitaireHudProps) {
     const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const [time, setTime] = useState(0);
 
     useEffect(() => {
-        if (gameId === 0) return;
+        if (stats.gameId === 0) return;
 
         const startTime = Date.now();
         setTime(0);
@@ -37,7 +43,7 @@ export default function SolitaireHud({ onAbandonGame, onRestartGame, onUndo, can
         return () => {
             if (timerRef.current) clearInterval(timerRef.current);
         };
-    }, [gameId]);
+    }, [stats.gameId]);
 
     useEffect(() => {
         if (gameWinTimerStop && timerRef.current) {
@@ -63,11 +69,11 @@ export default function SolitaireHud({ onAbandonGame, onRestartGame, onUndo, can
             </div>
             <div className={`${styles.hudDisplayVal} ${styles.score} no-highlight`}>
                 <span className={`${styles.statLabel}`}>score</span>
-                <span className={`${styles.scoreCount}`}>{score}</span>
+                <span className={`${styles.scoreCount}`}>{stats.score}</span>
             </div>
             <div className={`${styles.hudDisplayVal} ${styles.moves} no-highlight`}>
                 <span className={`${styles.statLabel}`}>moves</span>
-                <span className={`${styles.moveCount}`}>{moves}</span>
+                <span className={`${styles.moveCount}`}>{stats.moves}</span>
             </div>
 
             <button
@@ -75,7 +81,7 @@ export default function SolitaireHud({ onAbandonGame, onRestartGame, onUndo, can
                 data-tooltip-id="solitaire-hud-undo"
                 data-tooltip-content="Undo"
                 data-tooltip-float={true}
-                onClick={onUndo}
+                onClick={actions.undo}
                 disabled={!canUndo}
             >
                 <Tooltip
@@ -91,7 +97,7 @@ export default function SolitaireHud({ onAbandonGame, onRestartGame, onUndo, can
                 data-tooltip-id="solitaire-hud-restart"
                 data-tooltip-content="Restart"
                 data-tooltip-float={true}
-                onClick={onRestartGame}
+                onClick={() => actions.start(Number(selectedGameType) as 1 | 3)}
             >
                 <Tooltip
                     id="solitaire-hud-restart"
@@ -106,7 +112,7 @@ export default function SolitaireHud({ onAbandonGame, onRestartGame, onUndo, can
                 data-tooltip-id="solitaire-hud-abandon"
                 data-tooltip-content="Abandon game"
                 data-tooltip-float={true}
-                onClick={() => onAbandonGame()}
+                onClick={() => actions.abandon()}
             >
                 <Tooltip
                     id="solitaire-hud-abandon"

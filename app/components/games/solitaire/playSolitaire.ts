@@ -23,6 +23,7 @@ export function initializeGame(): SolitaireState {
         tableau: tableau,
         score: 0,
         moves: 0,
+        timesReshuffled: 0
     }
 }
 
@@ -33,10 +34,14 @@ export function dealWaste(currentState: SolitaireState, drawCount = 3) {
     // if no cards in draw (stock) pile, flip cards from discard (waste) pile
     if (stock.length === 0) {
         const newStock = [...waste].reverse().map(card => ({ ...card, faceUp: false }));
+        const moveScore = calculateMoveScore('waste', 'stock', false, currentState.timesReshuffled);
+
         return {
             ...currentState,
             stock: newStock,
             waste: [],
+            timesReshuffled: currentState.timesReshuffled + 1,
+            score: currentState.score + moveScore!,
         }
     }
 
@@ -123,14 +128,14 @@ export function handleCardDrop(
     }
 
     // Add score values
-    const moveScore = calculateMoveScore(originZoneId, targetZoneId, wasCardFlipped);
+    const moveScore = calculateMoveScore(originZoneId, targetZoneId, wasCardFlipped, currentState.timesReshuffled);
 
     return {
         ...currentState,
         waste: nextWaste,
         tableau: nextTableau,
         foundations: nextFoundations,
-        score: currentState.score + moveScore,
+        score: currentState.score + moveScore!,
         moves: currentState.moves + 1,
     }
 }
@@ -229,7 +234,7 @@ function flipTopCard(column: Card[]): boolean {
     return false;
 }
 
-function calculateMoveScore(originZoneId: string, targetZoneId: string, wasCardFlipped: boolean) {
+function calculateMoveScore(originZoneId: string, targetZoneId: string, wasCardFlipped: boolean, timesReshuffled: number) {
     let points = 0;
 
     // To foundation
@@ -243,6 +248,9 @@ function calculateMoveScore(originZoneId: string, targetZoneId: string, wasCardF
 
     // Flipping card in tableau
     if (wasCardFlipped) { points += 50; }
+
+    // Flipping waste to stock (after 1st time)
+    if (timesReshuffled >= 1 && originZoneId === 'waste') { points -= 200; }
 
     return points;
 }
