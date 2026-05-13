@@ -16,9 +16,9 @@ const SUIT_SYMBOL: Record<Suit, string> = {
 };
 
 const FACE_ICON: Record<string, React.ReactNode> = {
-    'J': <GiSwordAltar size={60} />,
-    'Q': <FaRegChessQueen size={60} />,
-    'K': <FaRegChessKing size={60} />,
+    'J': <GiSwordAltar />,
+    'Q': <FaRegChessQueen />,
+    'K': <FaRegChessKing />,
 };
 
 interface playingCardProps {
@@ -58,6 +58,7 @@ export default function PlayingCard({
         const pips = PIP_LAYOUTS[card.rank];
         if (!pips) return ( // skip to face card
             <span
+                className={styles.faceIcon}
                 style={{
                     gridRow: 3,
                     gridColumn: 2,

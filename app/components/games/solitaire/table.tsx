@@ -20,7 +20,7 @@ export default function SolitaireTable() {
     const [winModalOpen, setWinModalOpen] = useState(false);
 
     // Debugging //
-    const DEBUGGING = true;
+    const DEBUGGING = false;
 
     // Sounds // 
     const [playDropSound] = useSound('/audio/cardDrop.mp3', {
@@ -225,7 +225,9 @@ export default function SolitaireTable() {
         if (currentIndex >= cards.length) return null;
         const card = cards[currentIndex];
 
-        let childMargin = card.faceUp ? "-10.1rem" : "-10rem";
+        let childMargin = card.faceUp
+            ? "var(--card-overlap-visible, -10.1rem)"
+            : "var(--card-overlap-hidden, -10rem)";
 
         return (
             <div>

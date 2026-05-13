@@ -1,6 +1,6 @@
 'use client';
 import SolitaireTable from "../games/solitaire/table";
-import styles from "./play-table.module.css";
+import styles from "./play-table.module.scss";
 
 export default function PlayTable() {
 

@@ -1,12 +1,12 @@
 .playingCardContainer {
     position: relative;
-    width: 9rem;
-    height: 12rem;
+    width: var(--card-width, 9rem);
+    height: var(--card-height, 12rem);
     border: .19rem solid #b5b5b5;
     -webkit-box-shadow: 0px 0px 5px 1px rgba(181, 181, 181, 0.702);
     -moz-box-shadow: 0px 0px 5px 1px rgba(181, 181, 181, 0.702);
     box-shadow: 0px 0px 5px 1px rgba(181, 181, 181, 0.7);
-    border-radius: .5rem;
+    border-radius: var(--card-radius, .5rem);
     background-color: #15141a;
     display: flex;
     justify-content: center;
@@ -36,8 +36,8 @@
 }
 
 .corner {
-    font-size: 1.5rem;
-    line-height: 1.2rem;
+    font-size: var(--corner-font-size, 1.5rem);
+    line-height: .85em
 }
 
 .topLeft {
@@ -54,14 +54,21 @@
 }
 
 .centerContainer {
-    width: 85%;
+    width: var(--center-width, 82%);
     height: 85%;
-    padding: .3rem .8rem;
+    padding: 2% 5%;
+}
+
+.faceIcon {
+    font-size: calc(var(--card-height, 12rem) * 0.31);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .pip {
-    font-size: 1rem;
-    scale: 2.4;
+    font-size: calc(var(--card-height, 12rem) * 0.085);
+    scale: var(--pip-scale, 2.4);
 }
 
 .suitGrid {

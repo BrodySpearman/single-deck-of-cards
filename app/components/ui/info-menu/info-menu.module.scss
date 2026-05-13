@@ -153,3 +153,38 @@
     transition: none !important;
     scale: .95;
 }
+
+@media (max-width: 500px) {
+    .menuShell {
+        scale: 1;
+        bottom: 1rem;
+        width: 100%;
+        border-radius: 0;
+    }
+
+    .infoMenuContainer {
+        width: 100%;
+        height: auto;
+        min-height: 2rem;
+        border-radius: 0;
+
+        .selectOtherGames,
+        .gameSettings {
+            width: auto;
+            height: 100%;
+            padding: 0 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .startBtn {
+            font-size: 1rem;
+            padding-left: 0.3rem;
+            padding-right: 0.3rem;
+        }
+    }
+
+    .gameTypeSelection .gameTypeBtn {
+        width: auto;
+        padding: 0 0.5rem;
+    }
+}

@@ -5,7 +5,7 @@
 }
 
 .boardWrapper {
-    padding-top: 1.5rem;
+    padding-top: var(--board-padding-top, 1.5rem);
     width: fit-content;
     margin: 0 auto;
 }
@@ -15,7 +15,7 @@
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
-    height: 20%;
+    height: var(--top-board-height, 20%);
 }
 
 .foundationsContainer {
@@ -23,14 +23,14 @@
     display: grid;
     margin-left: .49rem;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
+    gap: var(--foundation-gap, 1rem);
 
     .foundation {
         border: .15rem dotted #727272;
     }
 
     .emptyFoundationSymbols {
-        font-size: 2.2rem;
+        font-size: var(--foundation-symbol-size, 2.2rem);
         color: #52528d;
         line-height: .2rem;
         height: 100%;
@@ -74,8 +74,8 @@
     }
 
     .emptyPileSymbInner {
-        width: 4rem;
-        height: 4rem;
+        width: var(--empty-pile-size, 4rem);
+        height: var(--empty-pile-size, 4rem);
         border: .35rem solid #830d0db7;
         border-radius: 50%;
     }
@@ -84,10 +84,10 @@
 .waste {
     display: flex;
     flex-direction: row;
-    min-width: 13rem;
+    min-width: var(--waste-min-width, 13rem);
 
     &>*+* {
-        margin-left: -7rem;
+        margin-left: var(--waste-overlap, -7rem);
     }
 
 }
@@ -97,21 +97,21 @@
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     column-gap: .2rem;
-    margin-top: 1.5rem;
+    margin-top: var(--tableau-margin-top, 1.5rem);
 }
 
 .tableauColumn {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-left: .5rem;
-    margin-right: .5rem;
+    margin-left: var(--tableau-col-margin, .5rem);
+    margin-right: var(--tableau-col-margin, .5rem);
 }
 
 .cardPlaceholder {
-    width: 9rem;
-    height: 12rem;
-    border-radius: .5rem;
+    width: var(--card-width, 9rem);
+    height: var(--card-height, 12rem);
+    border-radius: var(--card-radius, .5rem);
     background-color: #16141b;
 }
 
