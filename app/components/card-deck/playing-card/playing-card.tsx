@@ -42,12 +42,14 @@ export default function PlayingCard({
     onSolitaireDrop,
     children }: playingCardProps) {
 
-    const faceDownBorderColor = '#222f79';
+    const faceDownBorderColor = '#202e80f1';
 
     const renderCardBack = () => {
         return (
             <div className={styles.cardBack}>
-                <div className={styles.cardBackPattern}></div>
+                <div
+                    className={styles.cardBackPattern}
+                />
             </div>
         );
     }

@@ -173,7 +173,7 @@ export default function SolitaireTable() {
             return (
                 <motion.div
                     key={card.id}
-                    className={`${styles.cardPlaceholder}`}
+                    className={`${styles.wasteCard}`}
                     data-drop-zone={`waste`}
                     initial={{ x: 120, opacity: .25 }}
                     animate={{ x: 0, opacity: 1 }}

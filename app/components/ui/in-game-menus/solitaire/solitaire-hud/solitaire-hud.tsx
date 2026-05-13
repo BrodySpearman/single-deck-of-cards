@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { motion } from "framer-motion";
 
 import styles from "./solitaire-hud.module.scss";
 import genStyles from "../../../info-menu/info-menu.module.scss";
@@ -69,11 +70,19 @@ export default function SolitaireHud({ actions, stats, canUndo, gameWinTimerStop
             </div>
             <div className={`${styles.hudDisplayVal} ${styles.score} no-highlight`}>
                 <span className={`${styles.statLabel}`}>score</span>
-                <span className={`${styles.scoreCount}`}>{stats.score}</span>
+                <motion.span
+                    className={`${styles.scoreCount}`}
+                >
+                    {stats.score}
+                </motion.span>
             </div>
             <div className={`${styles.hudDisplayVal} ${styles.moves} no-highlight`}>
                 <span className={`${styles.statLabel}`}>moves</span>
-                <span className={`${styles.moveCount}`}>{stats.moves}</span>
+                <motion.span
+                    className={`${styles.moveCount}`}
+                >
+                    {stats.moves}
+                </motion.span>
             </div>
 
             <button

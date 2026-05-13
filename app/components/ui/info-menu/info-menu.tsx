@@ -103,7 +103,7 @@ export default function InfoMenu({ actions, stats, canUndo, gameWinTimerStop }: 
                             <div
                                 className={`${styles.selectOtherGames} ${styles.navBtn}`}
                                 data-tooltip-id="info-menu-more-games"
-                                data-tooltip-content="View other games (coming soon)."
+                                data-tooltip-content="More games (coming soon)."
                                 data-tooltip-float={true}
                             >
                                 <Tooltip
