@@ -28,8 +28,16 @@ interface playingCardProps {
     isPlayable?: boolean;
     draggable?: boolean;
     enableLayoutID?: boolean;
-    onSolitaireDrop?: (card: Card, targetZoneId: string) => void;
+    onDrop?: (card: Card, targetZoneId: string) => void;
     children?: React.ReactNode;
+}
+
+function CardBack() {
+    return (
+        <div className={styles.cardBack}>
+            <div className={styles.cardBackPattern} />
+        </div>
+    );
 }
 
 export default function PlayingCard({
@@ -39,30 +47,26 @@ export default function PlayingCard({
     isPlayable,
     draggable,
     enableLayoutID = true,
-    onSolitaireDrop,
+    onDrop,
     children }: playingCardProps) {
 
+    // Card colors // 
+    const isRedSuit = card.suit === 'hearts' || card.suit === 'diamonds';
     const faceDownBorderColor = '#202e80f1';
 
-    const renderCardBack = () => {
-        return (
-            <div className={styles.cardBack}>
-                <div
-                    className={styles.cardBackPattern}
-                />
-            </div>
-        );
-    }
+    const cardColor = !faceUp
+        ? faceDownBorderColor
+        : isRedSuit ? '#861111ff' : '#b5b5b5';
 
-    const renderPips = () => {
+    const cardGlowColor = !faceUp
+        ? faceDownBorderColor
+        : isRedSuit ? '#861111ff' : '#b5b5b5b3';
+
+    // Card renders //
+    function renderPips(card: Card) {
         const pips = PIP_LAYOUTS[card.rank];
         if (!pips) return ( // skip to face card
-            <span
-                className={styles.faceIcon}
-                style={{
-                    gridRow: 3,
-                    gridColumn: 2,
-                }}>
+            <span className={styles.faceIcon} style={{ gridRow: 3, gridColumn: 2, }}>
                 {FACE_ICON[card.rank]}
             </span>);
 
@@ -70,16 +74,15 @@ export default function PlayingCard({
             <span
                 key={i}
                 className={styles.pip}
-                style={{
-                    gridRow: pip.row,
-                    gridColumn: pip.col,
-                    transform: pip.flip ? 'rotate(180deg)' : 'none',
-                }}>
+                style={{ gridRow: pip.row, gridColumn: pip.col, transform: pip.flip ? 'rotate(180deg)' : 'none', }}
+            >
                 {SUIT_SYMBOL[card.suit]}
             </span>
         ));
-    }
+    };
+
     const cardRef = useRef<HTMLDivElement>(null); // Needed for more complex animation work
+
     return (
         <motion.div
             data-card-drag
@@ -98,7 +101,7 @@ export default function PlayingCard({
                 const pointerEvent = e as PointerEvent;
                 const dropZoneId = detectDropZone(e.target as HTMLElement, pointerEvent.clientX, pointerEvent.clientY);
                 if (dropZoneId) {
-                    onSolitaireDrop?.(card, dropZoneId);
+                    onDrop?.(card, dropZoneId);
                 }
             }}
             dragElastic={1}
@@ -114,11 +117,11 @@ export default function PlayingCard({
                 className={`${styles.playingCardContainer} no-highlight`}
                 whileHover={isPlayable ? { y: -5 } : {}}
                 style={{
-                    border: `.1rem solid ${card.faceUp ? card.suit === 'hearts' || card.suit === 'diamonds' ? '#861111ff' : '#b5b5b5' : faceDownBorderColor}`,
-                    boxShadow: `0px 0px 3px 1px ${card.faceUp ? card.suit === 'hearts' || card.suit === 'diamonds' ? '#861111ff' : '#b5b5b5b3' : faceDownBorderColor}`,
-                    WebkitBoxShadow: `0px 0px 3px 1px ${card.faceUp ? card.suit === 'hearts' || card.suit === 'diamonds' ? '#861111ff' : '#b5b5b5b3' : faceDownBorderColor}`,
-                    MozBoxShadow: `0px 0px 3px 1px ${card.faceUp ? card.suit === 'hearts' || card.suit === 'diamonds' ? '#861111ff' : '#b5b5b5b3' : faceDownBorderColor}`,
-                    color: card.faceUp ? card.suit === 'hearts' || card.suit === 'diamonds' ? '#861111ff' : '#b5b5b5b3' : faceDownBorderColor,
+                    border: `.1rem solid ${cardColor}`,
+                    boxShadow: `0px 0px 3px 1px ${cardGlowColor}`,
+                    WebkitBoxShadow: `0px 0px 3px 1px ${cardGlowColor}`,
+                    MozBoxShadow: `0px 0px 3px 1px ${cardGlowColor}`,
+                    color: cardGlowColor,
                 }}>
                 {faceUp ?
                     <>
@@ -128,11 +131,11 @@ export default function PlayingCard({
                         </div>
                         <div className={styles.centerContainer}>
                             <div className={styles.suitGrid}>
-                                {renderPips()}
+                                {renderPips(card)}
                             </div>
                         </div>
-                    </> :
-                    renderCardBack()
+                    </>
+                    : <CardBack />
                 }
             </motion.div>
             {children}
