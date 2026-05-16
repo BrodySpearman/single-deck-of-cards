@@ -60,6 +60,12 @@
         background-color: #64a75e !important;
         color: #cecece !important;
     }
+
+    &:active {
+        background-color: #3f663b !important;
+        color: #cecece !important;
+        transition: all .15s ease;
+    }
 }
 
 .restartBtn {
@@ -78,6 +84,10 @@
     &:hover {
         background-color: #832926 !important;
         color: #cecece !important;
+    }
+
+    &:active {
+        background-color: #421412 !important;
     }
 }
 

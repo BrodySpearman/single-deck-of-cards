@@ -56,6 +56,11 @@
             color: #cfe7d3;
             transition: all .2s ease;
         }
+
+        &:active {
+            background-color: #414170;
+            transition: all .15s ease;
+        }
     }
 
     .startBtn {

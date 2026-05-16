@@ -12,6 +12,7 @@
     --board-padding-top: 1.5rem;
     --tableau-margin-top: 1.5rem;
     --corner-font-size: 1.5rem;
+    --center-width: 80%;
     --pip-scale: 2.4;
     --foundation-symbol-size: 2.2rem;
     --empty-pile-size: 4rem;
@@ -39,8 +40,8 @@
         --waste-min-width: calc(var(--card-width) * 1.45);
         --foundation-gap: 0.6rem;
         --tableau-col-margin: 0.3rem;
-        --corner-font-size: 1.2rem;
-        --pip-scale: 1.8;
+        --corner-font-size: 1.4rem;
+        --pip-scale: 2.4;
         --foundation-symbol-size: 1.6rem;
         --empty-pile-size: 2.5rem;
         --top-board-height: 12rem;

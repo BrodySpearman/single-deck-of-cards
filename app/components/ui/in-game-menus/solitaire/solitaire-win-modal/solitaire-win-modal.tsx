@@ -8,9 +8,13 @@ interface SolitaireWinModalProps {
     winTime: number | null;
     onNewGame: () => void;
     onClose: () => void;
+    stats: {
+        score: number;
+        finalMoveCount: number;
+    }
 }
 
-export default function SolitaireWinModal({ winTime, onNewGame, onClose }: SolitaireWinModalProps) {
+export default function SolitaireWinModal({ winTime, onNewGame, onClose, stats }: SolitaireWinModalProps) {
     const winTimeSeconds = winTime ? Math.floor(winTime / 1000) : null;
 
     const formatTime = (totalSeconds: number | null): string => {
@@ -41,7 +45,19 @@ export default function SolitaireWinModal({ winTime, onNewGame, onClose }: Solit
                 <p className={`${styles.thankYouText} ${styles.menuText}`}>Thank you as always for playing.</p>
                 <p className={`${styles.disclaimerText} ${styles.menuText}`}>This is still a WIP, with more game statistics and analysis coming in the future.</p>
 
-                <p className={`${styles.gameTimeText} ${styles.menuText}`}>{formatTime(winTimeSeconds)}</p>
+                <p className={`${styles.gameTimeText} ${styles.menuText}`}>
+                    {formatTime(winTimeSeconds)}
+                </p>
+                <div className={`${styles.scoreAndMovesContainer} no-highlight`}>
+                    <div className={`${styles.gameScoreDiv}`}>
+                        <p className={`${styles.finalStatLabel} ${styles.menuText}`}>Score</p>
+                        <p className={`${styles.gameScoreText} ${styles.menuText}`}>{stats.score}</p>
+                    </div>
+                    <div className={`${styles.gameMovesDiv}`}>
+                        <p className={`${styles.finalStatLabel} ${styles.menuText}`}>Moves</p>
+                        <p className={`${styles.gameMovesText} ${styles.menuText}`}>{stats.finalMoveCount}</p>
+                    </div>
+                </div>
 
                 <div className={styles.menuBtnContainer}>
                     <button

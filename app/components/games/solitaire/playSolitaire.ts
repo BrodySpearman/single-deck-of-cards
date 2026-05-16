@@ -42,6 +42,7 @@ export function dealWaste(currentState: SolitaireState, drawCount = 3) {
             waste: [],
             timesReshuffled: currentState.timesReshuffled + 1,
             score: currentState.score + moveScore!,
+            moves: currentState.moves + 1,
         }
     }
 
@@ -52,6 +53,7 @@ export function dealWaste(currentState: SolitaireState, drawCount = 3) {
         ...currentState,
         waste: [...currentState.waste, ...dealt],
         stock: newStock,
+        moves: currentState.moves + 1,
     };
 }
 
@@ -250,7 +252,7 @@ function calculateMoveScore(originZoneId: string, targetZoneId: string, wasCardF
     if (wasCardFlipped) { points += 50; }
 
     // Flipping waste to stock (after 1st time)
-    if (timesReshuffled >= 1 && originZoneId === 'waste') { points -= 200; }
+    if (timesReshuffled >= 1 && originZoneId === 'waste' && targetZoneId === 'stock') { points -= 150; }
 
     return points;
 }

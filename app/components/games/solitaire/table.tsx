@@ -15,23 +15,24 @@ import InfoMenu from "../../ui/info-menu/info-menu";
 export default function SolitaireTable() {
     const [gameState, setGameState] = useState<SolitaireState | null>(null);
     const [gameWinTimerStop, setGameWinTimerStop] = useState(false);
+    const [finalMoveCount, setFinalMoveCount] = useState(0);
     const [drawCount, setDrawCount] = useState<1 | 3>(3);
     const [gameId, setGameId] = useState(0);
     const [winModalOpen, setWinModalOpen] = useState(false);
 
     // Debugging //
-    const DEBUGGING = false;
+    const DEBUGGING = true;
 
     // Sounds // 
     const [playDropSound] = useSound('/audio/cardDrop.mp3', {
         volume: .5,
         playbackRate: 2,
-    })
+    });
 
     const [playWasteDealSound] = useSound('/audio/cardDrop.mp3', {
         volume: .55,
         playbackRate: .9,
-    })
+    });
 
     // User interactions //
     const performCardDrop = (card: Card, originZoneId: string, targetZoneId: string) => {
@@ -62,7 +63,7 @@ export default function SolitaireTable() {
         setGameState(null);
         setGameId(0);
         startTimeRef.current = 0;
-    }
+    };
 
     const handleSmartClick = (card: Card, originZoneId: string) => {
         const newGameState = smartClick(gameState!, card, originZoneId);
@@ -71,7 +72,7 @@ export default function SolitaireTable() {
         saveSnapshot();
         setGameState(newGameState);
         playDropSound();
-    }
+    };
 
     const handleUndo = () => {
         if (history.length === 0) return;
@@ -79,7 +80,7 @@ export default function SolitaireTable() {
         const previousState = newHistory.pop();
         setGameState(previousState!);
         setHistory(newHistory);
-    }
+    };
 
     // Game timer //
     const startTimeRef = useRef<number>(0);
@@ -102,6 +103,7 @@ export default function SolitaireTable() {
             if (!isGameWon) {
                 setGameWinTimerStop(true);
                 setWinTime(Date.now() - startTimeRef.current);
+                setFinalMoveCount(gameState.moves);
 
                 const timer = setTimeout(() => {
                     setGameState(finishWin(gameState!));
@@ -120,7 +122,7 @@ export default function SolitaireTable() {
     const saveSnapshot = () => {
         const snapshot = structuredClone(gameState);
         setHistory(prev => [...prev, snapshot!]);
-    }
+    };
 
     // Table renderers //
     const renderFoundation = () => {
@@ -213,7 +215,7 @@ export default function SolitaireTable() {
                 />
             </button>
         );
-    }
+    };
 
     const NestedCardStack = ({ cards, currentIndex, columnIndex }:
         {
@@ -245,7 +247,7 @@ export default function SolitaireTable() {
                 </PlayingCard>
             </div>
         )
-    }
+    };
 
     const renderTableau = () => {
         return (
@@ -261,7 +263,7 @@ export default function SolitaireTable() {
                 </div>
             ))
         )
-    }
+    };
 
     const renderDebugMenu = () => {
         const simWin = () => {
@@ -270,7 +272,7 @@ export default function SolitaireTable() {
         return (
             <DebugMenu onSimulateWinClick={simWin} />
         );
-    }
+    };
 
     // Game prop groups //
     const gameActions = {
@@ -278,15 +280,16 @@ export default function SolitaireTable() {
         abandon: handleAbandonGame,
         undo: handleUndo,
         draw: handleDealWaste,
-    }
+    };
 
     const gameStats = useMemo(() => {
         return {
             score: gameState?.score || 0,
             moves: gameState?.moves || 0,
+            finalMoveCount: finalMoveCount,
             gameId: gameId,
         }
-    }, [gameState?.score, gameState?.moves, gameId]);
+    }, [gameState?.score, gameState?.moves, finalMoveCount, gameId]);
 
     return (
         <LayoutGroup>
@@ -330,6 +333,7 @@ export default function SolitaireTable() {
                             setWinModalOpen(false);
                         }}
                         onClose={() => setWinModalOpen(false)}
+                        stats={gameStats}
                     />
                 )}
 
@@ -344,4 +348,4 @@ export default function SolitaireTable() {
             </div>
         </LayoutGroup>
     );
-}
+};
